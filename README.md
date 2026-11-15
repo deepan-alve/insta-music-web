@@ -16,7 +16,10 @@ A browser extension for Chrome and Firefox. It plays the music on Instagram phot
 - It plays the clip of the post that fills most of the screen. The clip loops.
 - It stops the song when you scroll away, close the popup or hide the tab.
 - It gives way to a video that plays with sound on screen.
-- The toolbar popup and the sound button share one setting. The extension remembers it.
+- The toolbar popup shows the song on screen, plays or pauses it, and sets the volume.
+- The popup and the sound button share one on/off setting. The extension remembers it.
+- When the browser blocks sound, the pill says "Click to play". One click anywhere on the page starts it.
+- The About page has the support link, a problem report that opens a prefilled email, and the contact address.
 
 Reels are skipped. They have their own audio.
 
@@ -42,11 +45,12 @@ Firefox removes a temporary add-on when it closes. Release Firefox keeps only ad
 |---|---|
 | `npm test` | Unit tests for `music.js` |
 | `npm run build` | Writes `dist/postsound-chrome-<v>.zip` and `dist/postsound-firefox-<v>.xpi` |
+| `npm run test:e2e` | Chromium with the real extension against a mocked instagram.com: overlay, popup, feed, About page, phone widths. Set `PLAYWRIGHT_MODULE` and optionally `CHROMIUM_PATH` |
 | `npm run test:firefox` | Headless Firefox, logged out: install, one request per post, no retries |
-| `node scripts/firefox-smoke.mjs --login DIR` | Visible Firefox with a kept profile. Log in once, then it tests the pill, clicks and the feed |
+| `node scripts/firefox-smoke.mjs --login DIR` | Firefox with a kept profile against real Instagram. Log in once in the window. Add `--headless` after that, and `--block-autoplay` to test click-to-play |
 | `node scripts/store-assets.mjs` | Renders the store images into `store/` |
 
-No npm packages are needed. Node 22 or later, `zip`, Firefox and Chrome are enough.
+The extension and the build need no npm packages: Node 22 or later, `zip`, Firefox and Chrome are enough. Only `test:e2e` needs Playwright and its Chromium.
 
 ## Publish
 
@@ -60,6 +64,10 @@ No npm packages are needed. Node 22 or later, `zip`, Firefox and Chrome are enou
 - `content.js`: finds posts, fetches the song data and plays it.
 - `content.css`: the pill and the sound button. Every class starts with `ps-`.
 - `popup.html`, `popup.css`, `popup.js`: the toolbar popup.
+- `about.html`, `about.css`, `about.js`: support, problem report and contact. It is also the options page.
+- `config.js`: the support, issue and contact links. An empty URL hides its button.
+- `tokens.css`, `design.md`: the design system (hallmark, modern-minimal, Coral). Read `design.md` before UI changes.
+- `fonts/`: Geist Variable under the OFL. `icons/LICENSE-lucide.txt` covers the inlined Lucide icons.
 - `icons/`: rendered from `brand/icon.svg`. `brand/alt-icon-record*.svg` is an unused alternative.
 - `store/`: store images and listing copy. `store/src/` holds their sources.
 

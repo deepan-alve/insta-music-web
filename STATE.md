@@ -20,6 +20,9 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 - Firefox 1.0.0 works logged in: post page, clicks, mute, carousel, feed, stop on scroll. Evidence: `firefox-smoke.mjs --login`, 14 passed on 2026-11-16.
 - Blocked autoplay in Firefox now shows the pulsing button, and one click plays. Evidence: the same run with `--block-autoplay`, 14 passed.
 - The store images and listing copy exist. Evidence: `store/`, rendered by `scripts/store-assets.mjs`.
+- The popup shows what plays, with play/pause, the switch and a volume slider. The About page has support, report and contact. Evidence: `npm run test:e2e`, 25 passed twice on 2026-11-16.
+- The UI follows `design.md` (hallmark, modern-minimal, Coral). Contrast of every text pair is at least 4.5:1, measured from the tokens.
+- A fade could set the volume above 1, throw, and leave the song playing. The fade is clamped now. Evidence: the e2e run caught it, then passed.
 
 ## Tried and failed
 - Firefox play() can stay pending with no error when autoplay is blocked. Ask `navigator.getAutoplayPolicy` first.
@@ -32,12 +35,14 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 - An illustrated icon (photo print and record) lost to the gradient note icon.
 
 ## Uncertain
-- The 1.0.0 build is not tested in Chrome. Deepan must reload the extension card first.
+- The redesigned build is not seen in Deepan's own Chrome yet. He must reload the extension card first.
+- `config.js` has no support URL yet, so the support button is hidden.
 - No store has reviewed the package. The gradient icon looks like Instagram's colours, so review may object.
 
 ## Next
-1. Reload Postsound in `chrome://extensions`, then test the post page, popup, feed and a narrow window.
-2. Get a public URL for `PRIVACY.md`, a license choice, and the store accounts. See `store/LISTING.md`.
+1. Reload Postsound in `chrome://extensions`, then check the popup and the About page in his Chrome.
+2. Put the support link in `config.js` when Deepan picks one.
+3. Get a public URL for `PRIVACY.md`, a license choice, and the store accounts. See `store/LISTING.md`.
 
 ## Rollback
 Remove the extension at `chrome://extensions` or `about:addons`. No other state exists.

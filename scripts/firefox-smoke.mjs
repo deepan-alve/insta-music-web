@@ -4,6 +4,7 @@
 //   node scripts/firefox-smoke.mjs                 headless, empty profile, logged out
 //   node scripts/firefox-smoke.mjs --login DIR     visible window, profile kept in DIR.
 //                                                  Log in to Instagram in that window once.
+//   add --headless                                 run a logged-in profile without a window
 //   add --block-autoplay                           Firefox blocks autoplay. The test then expects
 //                                                  the pulsing button and plays after a click.
 //
@@ -49,7 +50,8 @@ writeFileSync(join(profile, 'user.js'), [
 ].join('\n'));
 
 const args = ['--no-remote', '--new-instance', '--profile', profile, '--remote-debugging-port', String(port)];
-if (!loginDir) args.unshift('--headless');
+// --headless also works with --login once the profile is logged in. A headless tab is never hidden.
+if (!loginDir || process.argv.includes('--headless')) args.unshift('--headless');
 const ff = spawn('firefox', args, { stdio: ['ignore', 'pipe', 'pipe'] });
 process.on('SIGINT', () => process.exit(130));
 process.on('SIGTERM', () => process.exit(143));
@@ -109,7 +111,7 @@ async function evaluate(expression) {
   if (r.type === 'exception') throw new Error(r.exceptionDetails?.text || 'script error');
   return r.result?.value;
 }
-const json = async (expression) => JSON.parse(await evaluate(`JSON.stringify(${expression})`));
+const json = async (expression) => JSON.parse((await evaluate(`JSON.stringify(${expression})`)) ?? 'null');
 // Postsound pauses in hidden tabs on purpose. A test window behind other windows counts as
 // hidden, so bring the tab to the front after every page load.
 async function go(url) {
@@ -228,6 +230,9 @@ if (!loggedIn) {
   const again = events.filter((e) => e.method === 'network.beforeRequestSent' && e.params.request.url.includes('/api/v1/media/')).length;
   check('does not retry a refused post', again === apiCalls.length, `${again} request(s) after 4 s more`);
 }
+
+// The toolbar popup is tested in Chromium (scripts/e2e-chromium.mjs).
+// Firefox refuses BiDi navigation to moz-extension:// pages.
 
 // ---------- feed ----------
 if (loggedIn) {

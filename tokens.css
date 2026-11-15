@@ -1,0 +1,193 @@
+/* Hallmark · genre: modern-minimal · theme: Coral · design-system: design.md · designed-as-app
+ * Shared tokens for the popup and the About page. Every colour and font below is a token.
+ * Pages reference tokens by name only.
+ */
+
+@font-face {
+  font-family: "Geist";
+  src: url("fonts/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+
+  /* colour: warm-grey paper, one coral accent */
+  --color-paper:       oklch(97.4% 0.004 60);
+  --color-paper-2:     oklch(94.6% 0.006 60);
+  --color-surface:     oklch(99.6% 0.002 60);
+  --color-ink:         oklch(21.5% 0.010 50);
+  --color-ink-2:       oklch(45.5% 0.012 50);
+  --color-ink-3:       oklch(53.5% 0.010 50);
+  --color-rule:        oklch(89.5% 0.006 60);
+  --color-rule-strong: oklch(80% 0.008 60);
+  --color-track:       oklch(87.5% 0.006 60);
+  --color-accent:      oklch(63.5% 0.185 36);
+  --color-accent-soft: oklch(63.5% 0.185 36 / 0.11);
+  --color-accent-text: oklch(53% 0.170 36);
+  --color-on-ink:      oklch(98.5% 0.003 60);
+  --color-knob:        oklch(99.6% 0.002 60);
+  --color-warn:        oklch(52% 0.140 55);
+  --color-focus:       oklch(63.5% 0.185 36);
+  --color-shadow:      oklch(20% 0.010 50 / 0.14);
+
+  /* type */
+  --font-body:    "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --text-2xs: 0.6875rem;
+  --text-xs:  0.75rem;
+  --text-sm:  0.8125rem;
+  --text-md:  0.9375rem;
+  --text-lg:  1.125rem;
+  --text-xl:  1.5rem;
+  --text-display: clamp(2.25rem, 3.2vw + 1.2rem, 3.25rem);
+  --track-display: -0.035em;
+  --track-head: -0.015em;
+
+  /* space: 4 pt scale */
+  --space-3xs: 0.25rem;
+  --space-2xs: 0.5rem;
+  --space-xs:  0.75rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  2rem;
+  --space-xl:  3rem;
+  --space-2xl: 4.5rem;
+
+  /* shape */
+  --radius-card:  12px;
+  --radius-input: 10px;
+  --radius-pill:  999px;
+  --rule: 1px solid var(--color-rule);
+
+  /* motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-press: 100ms;
+  --dur-short: 160ms;
+  --dur-med: 240ms;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper:       oklch(17% 0.006 50);
+    --color-paper-2:     oklch(22% 0.007 50);
+    --color-surface:     oklch(20.5% 0.007 50);
+    --color-ink:         oklch(95.5% 0.006 60);
+    --color-ink-2:       oklch(73% 0.010 60);
+    --color-ink-3:       oklch(62% 0.010 60);
+    --color-rule:        oklch(100% 0 0 / 0.09);
+    --color-rule-strong: oklch(100% 0 0 / 0.18);
+    --color-track:       oklch(33% 0.008 50);
+    --color-accent:      oklch(71% 0.165 38);
+    --color-accent-soft: oklch(71% 0.165 38 / 0.14);
+    --color-accent-text: oklch(74% 0.150 40);
+    --color-on-ink:      oklch(17% 0.006 50);
+    --color-knob:        oklch(97% 0.004 60);
+    --color-warn:        oklch(80% 0.120 70);
+    --color-focus:       oklch(71% 0.165 38);
+    --color-shadow:      oklch(0% 0 0 / 0.4);
+  }
+}
+
+* { box-sizing: border-box; }
+
+/* Component display rules must never beat the hidden attribute. */
+[hidden] { display: none !important; }
+
+html, body { overflow-x: clip; }
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font: 400 var(--text-sm) / 1.45 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+p, li { text-wrap: pretty; }
+h1, h2 { text-wrap: balance; font-style: normal; }
+button, input, select, textarea { font: inherit; color: inherit; }
+svg { display: block; flex: none; }
+
+/* Lucide icons, inlined. One stroke voice everywhere. */
+.icon {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+
+/* ---------- switch ---------- */
+
+.switch {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 34px;
+  height: 20px;
+  margin: 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-track);
+  cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out);
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--color-knob);
+  box-shadow: 0 1px 2px var(--color-shadow);
+  transition: translate var(--dur-med) var(--ease-out);
+}
+
+.switch:checked { background: var(--color-accent); }
+.switch:checked::after { translate: 14px 0; }
+.switch:disabled { opacity: 0.45; cursor: default; }
+
+/* ---------- buttons: ink pill primary, quiet outline secondary ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xs);
+  height: 38px;
+  padding: 0 var(--space-sm);
+  border: 1px solid var(--color-rule-strong);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--color-ink);
+  font-weight: 550;
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out), transform var(--dur-press) var(--ease-out);
+}
+
+.btn:hover { background: var(--color-paper-2); }
+.btn:active { transform: scale(0.97); }
+.btn:disabled, .btn[aria-disabled="true"] { opacity: 0.45; cursor: default; transform: none; }
+
+.btn.primary { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-on-ink); }
+.btn.primary:hover { background: var(--color-ink-2); border-color: var(--color-ink-2); }
+
+.btn.small { height: 30px; padding: 0 var(--space-xs); font-size: var(--text-xs); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0ms !important; animation: none !important; }
+}

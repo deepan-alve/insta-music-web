@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node --test",
     "build": "node scripts/build.mjs",
-    "test:firefox": "node scripts/firefox-smoke.mjs"
+    "test:firefox": "node scripts/firefox-smoke.mjs",
+    "test:e2e": "node scripts/e2e-chromium.mjs"
   },
   "engines": {
     "node": ">=22"

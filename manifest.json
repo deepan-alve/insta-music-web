@@ -4,7 +4,9 @@
   "short_name": "Postsound",
   "version": "1.0.0",
   "description": "Hear the music on Instagram photo and carousel posts in your browser. See the song and play its clip, like the app.",
-  "permissions": ["storage"],
+  "permissions": [
+    "storage"
+  ],
   "action": {
     "default_title": "Postsound",
     "default_popup": "popup.html",
@@ -14,11 +16,22 @@
       "48": "icons/icon-48.png"
     }
   },
+  "options_ui": {
+    "page": "about.html",
+    "open_in_tab": true
+  },
   "content_scripts": [
     {
-      "matches": ["https://www.instagram.com/*"],
-      "js": ["music.js", "content.js"],
-      "css": ["content.css"],
+      "matches": [
+        "https://www.instagram.com/*"
+      ],
+      "js": [
+        "music.js",
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ],
       "run_at": "document_idle"
     }
   ],

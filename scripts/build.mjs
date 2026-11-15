@@ -14,7 +14,10 @@ const base = JSON.parse(readFileSync(join(root, 'manifest.json'), 'utf8'));
 // Every file the extension uses, and nothing else.
 const files = [
   'music.js', 'content.js', 'content.css',
+  'config.js', 'tokens.css',
   'popup.html', 'popup.css', 'popup.js',
+  'about.html', 'about.css', 'about.js',
+  'fonts/Geist-Variable.woff2', 'fonts/OFL-Geist.txt', 'icons/LICENSE-lucide.txt',
   ...Object.values(base.icons),
 ];
 
@@ -40,8 +43,24 @@ for (const f of files) {
   if (!existsSync(join(root, f))) throw new Error(`missing file: ${f}`);
 }
 // Every file that the manifest or popup names must ship.
-for (const ref of [...base.content_scripts.flatMap((c) => [...c.js, ...c.css]), base.action.default_popup]) {
-  if (!files.includes(ref)) throw new Error(`manifest names ${ref}, but the build does not ship it`);
+const refs = [
+  ...base.content_scripts.flatMap((c) => [...c.js, ...c.css]),
+  base.action.default_popup,
+  base.options_ui.page,
+  ...Object.values(base.action.default_icon),
+];
+// Local files that the HTML pages load with src or href.
+for (const page of files.filter((f) => f.endsWith('.html'))) {
+  const html = readFileSync(join(root, page), 'utf8');
+  for (const [, ref] of html.matchAll(/(?:src|href)="([^"#:]+)"/g)) refs.push(ref);
+}
+// Files that the stylesheets load with url().
+for (const sheet of files.filter((f) => f.endsWith('.css'))) {
+  const css = readFileSync(join(root, sheet), 'utf8');
+  for (const [, ref] of css.matchAll(/url\("?([^")#:]+)"?\)/g)) refs.push(ref);
+}
+for (const ref of refs) {
+  if (!files.includes(ref)) throw new Error(`${ref} is used but the build does not ship it`);
 }
 
 rmSync(dist, { recursive: true, force: true });

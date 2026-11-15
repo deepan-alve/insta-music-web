@@ -26,6 +26,7 @@
   let fetching = false;
 
   let soundOn = true;
+  let volume = 1; // 0 to 1, from the popup slider
   let blocked = false; // the browser refused autoplay until the user interacts
   let active = null; // post state that owns the audio
   let fadeRaf = 0;
@@ -169,8 +170,12 @@
 
   // ---------- UI ----------
 
-  const ICON_ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.2L12 18.6V5.4L7.2 9.5H4Z" fill="currentColor"/><path d="M15.5 8.6a4.6 4.6 0 0 1 0 6.8M18.2 6a8.3 8.3 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
-  const ICON_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.2L12 18.6V5.4L7.2 9.5H4Z" fill="currentColor"/><path d="m15.6 9.4 5.2 5.2m0-5.2-5.2 5.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
+  // Lucide volume-2 and volume-x (ISC licence, see icons/LICENSE-lucide.txt).
+  const SPEAKER = '<path d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/>';
+  const svg = (inner) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${inner}</svg>`;
+  const ICON_ON = svg(`${SPEAKER}<path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.364 18.364a9 9 0 0 0 0-12.728"/>`);
+  const ICON_OFF = svg(`${SPEAKER}<line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/>`);
+  const ICON_NOTE = svg('<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>');
 
   const swallow = (ev) => ev.stopPropagation();
 
@@ -206,7 +211,10 @@
     const eq = el('span', 'ps-eq');
     eq.setAttribute('aria-hidden', 'true');
     eq.append(el('i'), el('i'), el('i'));
-    pill.append(text, eq);
+    // Shown only while the browser blocks sound, so people know one click starts it.
+    const hint = el('span', 'ps-hint');
+    hint.textContent = 'Click to play';
+    pill.append(text, eq, hint);
 
     const btn = el('button', 'ps-btn');
     btn.type = 'button';
@@ -228,7 +236,7 @@
   function noteIcon() {
     const span = el('span', 'ps-note');
     span.setAttribute('aria-hidden', 'true');
-    span.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 17.5V6.2l10-2.4v11.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.6" fill="currentColor"/><circle cx="16.5" cy="15.2" r="2.6" fill="currentColor"/></svg>';
+    span.innerHTML = ICON_NOTE;
     return span;
   }
 
@@ -279,8 +287,10 @@
     const from = audio.volume;
     const t0 = performance.now();
     const step = (now) => {
-      const k = Math.min(1, (now - t0) / FADE_MS);
-      audio.volume = from + (target - from) * k;
+      // The frame timestamp can be a little older than t0, so clamp both ends. An out-of-range
+      // volume throws, which would stop the fade and leave the song playing.
+      const k = Math.min(1, Math.max(0, (now - t0) / FADE_MS));
+      audio.volume = Math.min(1, Math.max(0, from + (target - from) * k));
       if (k < 1) fadeRaf = requestAnimationFrame(step);
       else if (then) then();
     };
@@ -323,7 +333,7 @@
       if (thisTry !== playTry) return;
       blocked = false;
       lastPlayError = '';
-      fadeTo(1);
+      fadeTo(volume);
     } catch (err) {
       if (thisTry !== playTry) return;
       // NotAllowedError means autoplay is blocked until a click. Firefox can hide the error
@@ -490,13 +500,47 @@
   }
   setInterval(scan, 1500);
 
+  function clampVolume(v) {
+    const n = Number(v);
+    return Number.isFinite(n) ? Math.min(1, Math.max(0, n)) : 1;
+  }
+
+  // ---------- popup messages ----------
+
+  function status() {
+    const m = active?.music;
+    return {
+      soundOn,
+      blocked: Boolean(active && blocked && soundOn),
+      playing: Boolean(active && soundOn && !blocked && !audio.paused),
+      song: m ? { title: m.title, artist: m.artist, cover: m.cover } : null,
+    };
+  }
+
+  ext?.runtime?.onMessage?.addListener((msg, _sender, reply) => {
+    if (msg?.type === 'postsound:status') {
+      reply(status());
+    } else if (msg?.type === 'postsound:toggle') {
+      // From the popup: play or pause the song on screen. A popup click is not a click on
+      // the page, so a blocked tab still needs one click on the page itself.
+      if (active) toggleSound(active);
+      else { soundOn = !soundOn; saveSetting({ soundOn }); paintAll(); }
+      reply(status());
+    }
+    return false;
+  });
+
   if (store) {
     // Promise form: Firefox's browser.* API takes no callbacks. Chrome MV3 supports both.
-    store.get({ soundOn: true })
-      .then((v) => { soundOn = v.soundOn !== false; })
+    store.get({ soundOn: true, volume: 1 })
+      .then((v) => { soundOn = v.soundOn !== false; volume = clampVolume(v.volume); })
       .catch(() => {})
       .finally(() => { paintAll(); scan(); });
     ext.storage.onChanged?.addListener((changes) => {
+      if (changes.volume) {
+        volume = clampVolume(changes.volume.newValue);
+        if (!audio.paused) { cancelAnimationFrame(fadeRaf); audio.volume = volume; }
+      }
       if (!changes.soundOn) return;
       soundOn = changes.soundOn.newValue !== false;
       if (soundOn) startAudio(); else stopAudio();
