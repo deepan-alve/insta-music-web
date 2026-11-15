@@ -11,7 +11,13 @@
   const ACTIVE_RATIO = 0.5; // share of the media that must be on screen to play.
   const FADE_MS = 250;
 
-  const store = globalThis.chrome?.storage?.local;
+  const ext = globalThis.browser ?? globalThis.chrome;
+  const store = ext?.storage?.local;
+  // Firefox runs content script fetches as the extension. content.fetch runs them as the page,
+  // so Instagram gets its own origin and cookies. Chrome already does that with plain fetch.
+  const pageFetch = typeof globalThis.content?.fetch === 'function'
+    ? globalThis.content.fetch.bind(globalThis.content)
+    : globalThis.fetch.bind(globalThis);
   const musicCache = new Map(); // shortcode -> Promise<music | null>
   const posts = new Map(); // root element -> post state
   const fetchQueue = [];
@@ -87,22 +93,30 @@
     while (fetchQueue.length) {
       const { code, resolve } = fetchQueue.shift();
       try {
-        const res = await fetch(`/api/v1/media/${shortcodeToPk(code)}/info/`, {
+        const res = await pageFetch(`${location.origin}/api/v1/media/${shortcodeToPk(code)}/info/`, {
           credentials: 'include',
+          // A logged out session gets a redirect to the login page. Do not follow it.
+          redirect: 'manual',
           headers: { 'X-IG-App-ID': APP_ID, 'X-Requested-With': 'XMLHttpRequest' },
         });
         if (res.status === 429) {
-          // Rate limited. Forget the result so a later scan can retry.
-          musicCache.delete(code);
+          // Rate limited. Wait, and let a later scan try this post again.
           resolve(null);
+          forgetLater(code, 60000);
           await sleep(30000);
           continue;
         }
-        const json = res.ok ? await res.json() : null;
+        // Parse the text here. Firefox wraps objects that come from the page.
+        // A bad answer caches null, so the post is not asked for again in this tab.
+        let json = null;
+        if (res.ok) {
+          try { json = JSON.parse(await res.text()); } catch { json = null; }
+        }
         resolve(parseMusic(json?.items?.[0]));
       } catch {
-        musicCache.delete(code);
+        // Network error. Let a later scan try again after a pause.
         resolve(null);
+        forgetLater(code, 15000);
       }
       await sleep(150);
     }
@@ -110,6 +124,7 @@
   }
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const forgetLater = (code, ms) => setTimeout(() => musicCache.delete(code), ms);
 
   // ---------- finding posts ----------
 
@@ -130,7 +145,9 @@
   function openDialog() {
     const dialogs = [...document.querySelectorAll('div[role="dialog"]')].filter((d) => {
       const r = d.getBoundingClientRect();
-      return r.width > 300 && r.height > 300;
+      if (r.width <= 300 || r.height <= 300) return false;
+      // Only a post popup counts. Login, share and menu popups have no large media.
+      return [...d.querySelectorAll('img, video')].some((m) => m.getBoundingClientRect().width >= MIN_MEDIA);
     });
     return dialogs[dialogs.length - 1] || null;
   }
@@ -360,12 +377,13 @@
         posts.set(root, post);
       }
       if (!post.box || !post.box.isConnected) post.box = findMediaBox(root);
+      // null with no cache entry: the last request failed and its pause is over.
+      if (post.music === null && !musicCache.has(code)) post.music = undefined;
       if (post.music === undefined && post.box && visibleRatio(post.box) > 0) {
         post.music = null;
         getMusic(code).then((music) => {
           if (posts.get(root) !== post) return;
           post.music = music;
-          if (music === null && !musicCache.has(code)) post.music = undefined; // retry later
           if (music) { mountUi(post); pickActive(); }
         });
       } else if (post.music) {
@@ -438,8 +456,12 @@
   setInterval(scan, 1500);
 
   if (store) {
-    store.get({ soundOn: true }, (v) => { soundOn = v.soundOn !== false; paintAll(); scan(); });
-    globalThis.chrome.storage.onChanged?.addListener((changes) => {
+    // Promise form: Firefox's browser.* API takes no callbacks. Chrome MV3 supports both.
+    store.get({ soundOn: true })
+      .then((v) => { soundOn = v.soundOn !== false; })
+      .catch(() => {})
+      .finally(() => { paintAll(); scan(); });
+    ext.storage.onChanged?.addListener((changes) => {
       if (changes.soundOn) {
         soundOn = changes.soundOn.newValue !== false;
         if (soundOn) startAudio(); else stopAudio();
