@@ -1,0 +1,24 @@
+# postsound.deepanalve.dev on Dokploy (biriyani). Compose app "postsound-site". Static, no secrets.
+
+services:
+  site:
+    build:
+      context: ..
+      dockerfile: site.Dockerfile
+    restart: unless-stopped
+    networks:
+      - dokploy-network
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=dokploy-network
+      - traefik.http.routers.postsound-web.entrypoints=web
+      - traefik.http.routers.postsound-web.rule=Host(`postsound.deepanalve.dev`)
+      - traefik.http.routers.postsound-web.middlewares=redirect-to-https@file
+      - traefik.http.routers.postsound-websecure.entrypoints=websecure
+      - traefik.http.routers.postsound-websecure.rule=Host(`postsound.deepanalve.dev`)
+      - traefik.http.routers.postsound-websecure.tls.certresolver=letsencrypt
+      - traefik.http.services.postsound.loadbalancer.server.port=80
+
+networks:
+  dokploy-network:
+    external: true
