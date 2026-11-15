@@ -23,6 +23,8 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 - The popup shows what plays, with play/pause, the switch and a volume slider. The About page has support, report and contact. Evidence: `npm run test:e2e`, 25 passed twice on 2026-11-16.
 - The UI follows `design.md` (hallmark, modern-minimal, Coral). Contrast of every text pair is at least 4.5:1, measured from the tokens.
 - A fade could set the volume above 1, throw, and leave the song playing. The fade is clamped now. Evidence: the e2e run caught it, then passed.
+- The product site exists in `site/` and builds with `site.Dockerfile` (nginx). Evidence: docker build and curl of every page on 2026-11-16, and a browser check at desktop and phone widths.
+- The Support button opens guestbook.deepanalve.dev/sign with Postsound picked. The guestbook lives in `~/code/guestbook`.
 
 ## Tried and failed
 - Firefox play() can stay pending with no error when autoplay is blocked. Ask `navigator.getAutoplayPolicy` first.
@@ -36,12 +38,11 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 
 ## Uncertain
 - The redesigned build is not seen in Deepan's own Chrome yet. He must reload the extension card first.
-- `config.js` has no support URL yet, so the support button is hidden.
 - No store has reviewed the package. The gradient icon looks like Instagram's colours, so review may object.
 
 ## Next
 1. Reload Postsound in `chrome://extensions`, then check the popup and the About page in his Chrome.
-2. Put the support link in `config.js` when Deepan picks one.
+2. Deploy `site.Dockerfile` on Dokploy at postsound.deepanalve.dev.
 3. Get a public URL for `PRIVACY.md`, a license choice, and the store accounts. See `store/LISTING.md`.
 
 ## Rollback

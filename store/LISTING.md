@@ -37,6 +37,9 @@ Good to know
 • Your browser may wait for one click on the page before it allows sound
 • Turn it on or off any time from the toolbar button
 
+Support
+Postsound stays free. The people who keep it going sign a guestbook by hand at guestbook.deepanalve.dev.
+
 Private by design
 Postsound has no servers and collects nothing. It asks instagram.com for the song of the post on your screen, the same way the Instagram website asks for post details. The only thing it saves is your sound on or off choice, in your own browser.
 
@@ -84,7 +87,7 @@ Remote code: **No, I am not using remote code.** All code ships in the package. 
 Data usage: check nothing. Postsound collects no user data.
 Then certify all three statements: no selling of data, no use unrelated to the single purpose, no use for credit decisions.
 
-Privacy policy URL: a public page with the text of `PRIVACY.md`. See "Still needed" below.
+Privacy policy URL: `https://postsound.deepanalve.dev/privacy` (live after the site deploys).
 
 ## AMO settings
 
@@ -106,7 +109,7 @@ To test: log in to Instagram, then open https://www.instagram.com/p/DdoVXZ0kYVE/
 
 ## Still needed before upload
 
-1. A public URL for the privacy policy. The GitHub repo is private, so a GitHub link will not work.
+1. Deploy postsound.deepanalve.dev, so the privacy URL above is live.
 2. A license choice for AMO, for example MIT or All Rights Reserved.
 3. A Chrome Web Store developer account. Google charges a one-time US$5 fee.
 4. A Firefox Add-ons account. It is free.
