@@ -1,0 +1,10 @@
+.env
+.env.*
+!.env.tpl
+.claude/settings.local.json
+node_modules/
+target/
+.venv/
+__pycache__/
+dist/
+.next/
