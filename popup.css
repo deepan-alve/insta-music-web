@@ -1,0 +1,105 @@
+:root {
+  --bg: #fffaf5;
+  --ink: #16141a;
+  --muted: #6b6470;
+  --line: rgba(22, 20, 26, 0.1);
+  --tile: #ffffff;
+  --accent: #e1306c;
+  --track: #d9d3d0;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16141a;
+    --ink: #f6f1ec;
+    --muted: #a49ca8;
+    --line: rgba(255, 255, 255, 0.1);
+    --tile: #201d25;
+    --track: #3a3541;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  width: 300px;
+  margin: 0;
+  padding: 14px;
+  background: var(--bg);
+  color: var(--ink);
+  font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.logo { border-radius: 8px; display: block; }
+
+h1 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.sub { margin: 0; color: var(--muted); font-size: 12px; }
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--tile);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.row-text { display: grid; gap: 2px; flex: 1; }
+.row-title { font-weight: 600; }
+.row-hint { color: var(--muted); font-size: 12px; }
+
+.switch {
+  appearance: none;
+  flex: none;
+  position: relative;
+  width: 38px;
+  height: 22px;
+  margin: 0;
+  border-radius: 11px;
+  background: var(--track);
+  cursor: pointer;
+  transition: background-color 180ms ease;
+}
+
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  transition: translate 200ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.switch:checked { background: var(--accent); }
+.switch:checked::after { translate: 16px 0; }
+.switch:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.foot {
+  margin: 10px 2px 0;
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .switch, .switch::after { transition: none; }
+}

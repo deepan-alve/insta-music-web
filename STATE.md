@@ -7,33 +7,40 @@ Run `state-facts` to fill this block. Do not edit it by hand.
 status: in_progress
 
 ## Goal
-Instagram photo posts play their song on instagram.com in Chrome and Firefox, as on the mobile app.
+Postsound plays the song of Instagram photo posts on instagram.com in Chrome and Firefox, and is ready for both stores.
 
 ## Done
 - The media info API returns `music_metadata` for photo and carousel posts. Evidence: tested in Chrome on 2026-11-16.
-- The script plays the song on a post page, in the post popup and in the home feed. Evidence: injected into a logged-in tab on 2026-11-16.
-- The mute button, carousel swipes, popup next and back, and popup close work. Evidence: same test.
-- The unpacked extension plays the song in Deepan's Chrome. Evidence: Deepan loaded it, and a check found the pill playing on 2026-11-16.
-- The Firefox `.xpi` installs and sends one media info request per post. Evidence: `node scripts/test-firefox.mjs` on 2026-11-16, logged out.
-- A login popup no longer counts as a post popup. Evidence: the same Firefox test sent the request only after this fix.
+- Version 0.1 played songs in Deepan's Chrome on a post page, in the popup and in the feed. Evidence: Chrome checks on 2026-11-16.
+- The product is renamed Postsound. Meta's brand rules forbid "Insta" in product names.
+- Deepan chose the gradient tile with a white note as the icon. Evidence: his message on 2026-11-16. See project memory `icon-choice`.
+- `music.js` holds the pure helpers. Evidence: `npm test`, 11 passed on 2026-11-16.
+- The 1.0.0 packages build. Evidence: `npm run build` on 2026-11-16.
+- The Firefox 1.0.0 package installs and sends one request per post, logged out. Evidence: `npm run test:firefox`, 4 passed on 2026-11-16.
+- Firefox 1.0.0 works logged in: post page, clicks, mute, carousel, feed, stop on scroll. Evidence: `firefox-smoke.mjs --login`, 14 passed on 2026-11-16.
+- Blocked autoplay in Firefox now shows the pulsing button, and one click plays. Evidence: the same run with `--block-autoplay`, 14 passed.
+- The store images and listing copy exist. Evidence: `store/`, rendered by `scripts/store-assets.mjs`.
 
 ## Tried and failed
+- Firefox play() can stay pending with no error when autoplay is blocked. Ask `navigator.getAutoplayPolicy` first.
+- A killed test Firefox counts as a startup crash. After a few, Firefox restarts into Troubleshoot Mode and drops the BiDi flag. The test profile turns that check off.
+- With Deepan's Firefox open, a visible test Firefox needs `--new-instance`.
 - `/api/v1/users/web_profile_info/` returns 404 now. Do not use it.
 - `/api/v1/feed/user/<name>/username/` returns 404 now. Do not use it.
+- Claude in Chrome cannot open `chrome://` pages, and no desktop control tool exists on Ullam. Deepan must click in `chrome://extensions`.
+- `/usr/bin/orca` is the GNOME screen reader, not a desktop control tool. Do not run it.
+- An illustrated icon (photo print and record) lost to the gradient note icon.
 
 ## Uncertain
-- Firefox is not tested while logged in to Instagram. The test profile is empty.
-- The latest content.js changes are not tested in Chrome. They are the Firefox fetch, the popup filter and the retry pause.
-- The video guard in `pickActive` is not tested in a browser.
-- The autoplay block path is not tested.
+- The 1.0.0 build is not tested in Chrome. Deepan must reload the extension card first.
+- No store has reviewed the package. The gradient icon looks like Instagram's colours, so review may object.
 
 ## Next
-1. Load the `.xpi` in Firefox with **Load Temporary Add-on** and open a post with music while logged in.
-2. Reload the Chrome extension card and check a post with music again.
-3. Ask Deepan if he wants an AMO unlisted signature so Firefox keeps the add-on after a restart.
+1. Reload Postsound in `chrome://extensions`, then test the post page, popup, feed and a narrow window.
+2. Get a public URL for `PRIVACY.md`, a license choice, and the store accounts. See `store/LISTING.md`.
 
 ## Rollback
 Remove the extension at `chrome://extensions` or `about:addons`. No other state exists.
 
 ## More
-Transcript: `recall "insta music extension" --project insta-music-web`.
+Transcript: `recall "postsound instagram music" --project insta-music-web`.

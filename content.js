@@ -1,12 +1,13 @@
-// Insta Music Web: plays the song attached to Instagram photo and carousel posts.
-// The web feed data has no song info for photos. The media info API has it,
-// so we fetch it per visible post and play the clip with one shared <audio>.
+// Postsound: plays the song attached to Instagram photo and carousel posts on the web.
+// The web feed data has no song fields for photos. The media info API has them, so this
+// script fetches them for each visible post and plays the clip with one shared <audio>.
 (() => {
-  if (window.__imwLoaded) return;
-  window.__imwLoaded = true;
+  if (globalThis.__postsoundLoaded) return;
+  globalThis.__postsoundLoaded = true;
 
-  const APP_ID = '936619743392459'; // Instagram web app id, sent by instagram.com itself.
-  const ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+  const { shortcodeToPk, codeFromPath, parseMusic } = globalThis.PostsoundData;
+
+  const APP_ID = '936619743392459'; // Instagram web app id. instagram.com sends the same one.
   const MIN_MEDIA = 200; // px. Smaller images are avatars or thumbnails.
   const ACTIVE_RATIO = 0.5; // share of the media that must be on screen to play.
   const FADE_MS = 250;
@@ -18,64 +19,31 @@
   const pageFetch = typeof globalThis.content?.fetch === 'function'
     ? globalThis.content.fetch.bind(globalThis.content)
     : globalThis.fetch.bind(globalThis);
+
   const musicCache = new Map(); // shortcode -> Promise<music | null>
   const posts = new Map(); // root element -> post state
   const fetchQueue = [];
   let fetching = false;
 
   let soundOn = true;
-  let blocked = false; // browser refused autoplay until the user interacts
+  let blocked = false; // the browser refused autoplay until the user interacts
   let active = null; // post state that owns the audio
   let fadeRaf = 0;
+  let lastPlayError = ''; // shown as data-error on the active overlay, for debugging
 
   const audio = new Audio();
   audio.preload = 'auto';
   audio.volume = 0;
 
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const forgetLater = (code, ms) => setTimeout(() => musicCache.delete(code), ms);
+
+  function saveSetting(value) {
+    // After an extension update, the old script loses its storage access. Ignore that.
+    try { store?.set(value)?.catch?.(() => {}); } catch { /* context invalidated */ }
+  }
+
   // ---------- data ----------
-
-  function shortcodeToPk(code) {
-    let n = 0n;
-    for (const ch of code.slice(0, 11)) n = n * 64n + BigInt(ALPHABET.indexOf(ch));
-    return n.toString();
-  }
-
-  function parseMusic(item) {
-    if (!item || item.media_type === 2) return null; // videos and reels carry their own audio
-    const mm = item.music_metadata;
-    const info = mm?.music_info;
-    const asset = info?.music_asset_info;
-    const use = info?.music_consumption_info;
-    if (asset) {
-      if (use?.should_mute_audio) return null;
-      const url = asset.progressive_download_url || asset.fast_start_progressive_download_url || asset.web_30s_preview_download_url;
-      if (!url) return null;
-      const start = (use?.audio_asset_start_time_in_ms || 0) / 1000;
-      const length = (use?.overlap_duration_in_ms || 30000) / 1000;
-      return {
-        title: asset.title || 'Unknown song',
-        artist: asset.display_artist || '',
-        cover: asset.cover_artwork_thumbnail_uri || '',
-        url,
-        start,
-        end: start + length,
-      };
-    }
-    const orig = mm?.original_sound_info;
-    if (orig?.progressive_download_url) {
-      const start = (orig.audio_asset_start_time_in_ms || 0) / 1000;
-      const length = (orig.overlap_duration_in_ms || orig.duration_in_ms || 30000) / 1000;
-      return {
-        title: orig.original_audio_title || 'Original audio',
-        artist: orig.ig_artist?.username || '',
-        cover: orig.ig_artist?.profile_pic_url || '',
-        url: orig.progressive_download_url,
-        start,
-        end: start + length,
-      };
-    }
-    return null;
-  }
 
   function getMusic(code) {
     if (!musicCache.has(code)) {
@@ -92,8 +60,10 @@
     fetching = true;
     while (fetchQueue.length) {
       const { code, resolve } = fetchQueue.shift();
+      const pk = shortcodeToPk(code);
+      if (!pk) { resolve(null); continue; }
       try {
-        const res = await pageFetch(`${location.origin}/api/v1/media/${shortcodeToPk(code)}/info/`, {
+        const res = await pageFetch(`${location.origin}/api/v1/media/${pk}/info/`, {
           credentials: 'include',
           // A logged out session gets a redirect to the login page. Do not follow it.
           redirect: 'manual',
@@ -123,18 +93,13 @@
     fetching = false;
   }
 
-  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-  const forgetLater = (code, ms) => setTimeout(() => musicCache.delete(code), ms);
-
   // ---------- finding posts ----------
-
-  const CODE_RE = /\/(?:p|reel|reels|tv)\/([A-Za-z0-9_-]{6,})/;
 
   function codeFromRoot(root) {
     const counts = new Map();
     for (const a of root.querySelectorAll('a[href*="/p/"], a[href*="/reel/"]')) {
-      const m = (a.getAttribute('href') || '').match(CODE_RE);
-      if (m) counts.set(m[1], (counts.get(m[1]) || 0) + 1);
+      const c = codeFromPath(a.getAttribute('href'));
+      if (c) counts.set(c, (counts.get(c) || 0) + 1);
     }
     let best = null;
     let bestN = 0;
@@ -142,24 +107,29 @@
     return best;
   }
 
-  function openDialog() {
+  function hasLargeMedia(el) {
+    return [...el.querySelectorAll('img, video')].some((m) => m.getBoundingClientRect().width >= MIN_MEDIA);
+  }
+
+  function openPostDialog() {
+    // A post popup always puts the post in the URL. Other popups, such as the
+    // notifications prompt, can hold large images but leave the URL alone.
+    if (!codeFromPath(location.pathname)) return null;
     const dialogs = [...document.querySelectorAll('div[role="dialog"]')].filter((d) => {
       const r = d.getBoundingClientRect();
-      if (r.width <= 300 || r.height <= 300) return false;
       // Only a post popup counts. Login, share and menu popups have no large media.
-      return [...d.querySelectorAll('img, video')].some((m) => m.getBoundingClientRect().width >= MIN_MEDIA);
+      return r.width > 300 && r.height > 300 && hasLargeMedia(d);
     });
     return dialogs[dialogs.length - 1] || null;
   }
 
   function findRoots() {
     const found = [];
-    const dialog = openDialog();
-    const pageMatch = location.pathname.match(CODE_RE);
-    if (pageMatch) {
-      // A post page, or a post opened as a modal over the feed or a profile.
-      const root = dialog || document.querySelector('main');
-      if (root) found.push({ root, code: pageMatch[1] });
+    const pageCode = codeFromPath(location.pathname);
+    if (pageCode) {
+      // A post page, or a post opened as a popup over the feed or a profile.
+      const root = openPostDialog() || document.querySelector('main');
+      if (root) found.push({ root, code: pageCode });
     }
     for (const art of document.querySelectorAll('article')) {
       if (found.some((f) => f.root.contains(art))) continue;
@@ -174,7 +144,7 @@
       Math.abs(a.width - b.width) < 3 && Math.abs(a.height - b.height) < 3;
   }
 
-  // The media frame: the outermost element that has the same box as the first image.
+  // The media frame: the outermost element with the same box as the first image.
   function findMediaBox(root) {
     const rootRect = root.getBoundingClientRect();
     const media = [...root.querySelectorAll('img, video')]
@@ -202,33 +172,64 @@
   const ICON_ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.2L12 18.6V5.4L7.2 9.5H4Z" fill="currentColor"/><path d="M15.5 8.6a4.6 4.6 0 0 1 0 6.8M18.2 6a8.3 8.3 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
   const ICON_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.2L12 18.6V5.4L7.2 9.5H4Z" fill="currentColor"/><path d="m15.6 9.4 5.2 5.2m0-5.2-5.2 5.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
 
-  function stop(ev) { ev.stopPropagation(); }
+  const swallow = (ev) => ev.stopPropagation();
 
+  function el(tag, className) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    return node;
+  }
+
+  // Built with DOM calls, not innerHTML, so song titles can never become markup.
   function buildUi(post) {
     const { music } = post;
-    const ui = document.createElement('div');
-    ui.className = 'imw-layer';
-    ui.innerHTML = `
-      <button type="button" class="imw-pill" aria-label="Song: ${escapeHtml(music.title)}">
-        ${music.cover ? `<img class="imw-cover" alt="" src="${escapeHtml(music.cover)}">` : '<span class="imw-note">&#9835;</span>'}
-        <span class="imw-text"><span class="imw-marquee"></span></span>
-        <span class="imw-eq" aria-hidden="true"><i></i><i></i><i></i></span>
-      </button>
-      <button type="button" class="imw-btn" aria-label="Toggle music"></button>`;
-    ui.querySelector('.imw-marquee').textContent = music.artist ? `${music.title} · ${music.artist}` : music.title;
-    for (const btn of ui.querySelectorAll('button')) {
-      for (const type of ['pointerdown', 'mousedown', 'dblclick', 'touchstart']) btn.addEventListener(type, stop);
-      btn.addEventListener('click', (ev) => {
+    const label = music.artist ? `${music.title} · ${music.artist}` : music.title;
+    const ui = el('div', 'ps-layer');
+
+    const pill = el('button', 'ps-pill');
+    pill.type = 'button';
+    pill.title = label;
+    pill.setAttribute('aria-label', `${label}. Turn music on or off`);
+    if (music.cover) {
+      const cover = el('img', 'ps-cover');
+      cover.alt = '';
+      cover.src = music.cover;
+      cover.addEventListener('error', () => cover.replaceWith(noteIcon()), { once: true });
+      pill.append(cover);
+    } else {
+      pill.append(noteIcon());
+    }
+    const text = el('span', 'ps-text');
+    const marquee = el('span', 'ps-marquee');
+    marquee.textContent = label;
+    text.append(marquee);
+    const eq = el('span', 'ps-eq');
+    eq.setAttribute('aria-hidden', 'true');
+    eq.append(el('i'), el('i'), el('i'));
+    pill.append(text, eq);
+
+    const btn = el('button', 'ps-btn');
+    btn.type = 'button';
+
+    for (const b of [pill, btn]) {
+      for (const type of ['pointerdown', 'mousedown', 'pointerup', 'mouseup', 'dblclick', 'touchstart']) {
+        b.addEventListener(type, swallow);
+      }
+      b.addEventListener('click', (ev) => {
         ev.preventDefault();
         ev.stopPropagation();
         toggleSound(post);
       });
     }
+    ui.append(pill, btn);
     return ui;
   }
 
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  function noteIcon() {
+    const span = el('span', 'ps-note');
+    span.setAttribute('aria-hidden', 'true');
+    span.innerHTML = '<svg viewBox="0 0 24 24"><path d="M9 17.5V6.2l10-2.4v11.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="6.5" cy="17.5" r="2.6" fill="currentColor"/><circle cx="16.5" cy="15.2" r="2.6" fill="currentColor"/></svg>';
+    return span;
   }
 
   function mountUi(post) {
@@ -245,11 +246,11 @@
   }
 
   function fitMarquee(ui) {
-    const box = ui.querySelector('.imw-text');
-    const inner = ui.querySelector('.imw-marquee');
+    const box = ui.querySelector('.ps-text');
+    const inner = ui.querySelector('.ps-marquee');
     const overflow = inner.scrollWidth - box.clientWidth;
-    ui.classList.toggle('imw-long', overflow > 4);
-    ui.style.setProperty('--imw-shift', `${-Math.max(overflow + 12, 0)}px`);
+    ui.classList.toggle('ps-long', overflow > 4);
+    ui.style.setProperty('--ps-shift', `${-Math.max(overflow + 12, 0)}px`);
   }
 
   function paint(post) {
@@ -257,12 +258,15 @@
     const isActive = post === active;
     const playing = isActive && soundOn && !blocked && !audio.paused;
     post.ui.dataset.state = playing ? 'playing' : (isActive && blocked && soundOn ? 'blocked' : 'idle');
-    const btn = post.ui.querySelector('.imw-btn');
-    const wantOn = soundOn && !(isActive && blocked);
-    if (btn.dataset.on !== String(wantOn)) {
-      btn.dataset.on = String(wantOn);
-      btn.innerHTML = wantOn ? ICON_ON : ICON_OFF;
-      btn.setAttribute('aria-label', wantOn ? 'Mute music' : 'Play music');
+    post.ui.dataset.active = String(isActive);
+    if (isActive && lastPlayError) post.ui.dataset.error = lastPlayError;
+    else delete post.ui.dataset.error;
+    const btn = post.ui.querySelector('.ps-btn');
+    const showOn = soundOn && !(isActive && blocked);
+    if (btn.dataset.on !== String(showOn)) {
+      btn.dataset.on = String(showOn);
+      btn.innerHTML = showOn ? ICON_ON : ICON_OFF;
+      btn.setAttribute('aria-label', showOn ? 'Mute music' : 'Play music');
     }
   }
 
@@ -283,6 +287,13 @@
     fadeRaf = requestAnimationFrame(step);
   }
 
+  // Firefox blocks audible autoplay until the user clicks the page. There, play() can stay
+  // pending with no error, so ask the browser first where it can tell us (Firefox 112+).
+  function autoplayDisallowed() {
+    try { return navigator.getAutoplayPolicy?.(audio) === 'disallowed'; } catch { return false; }
+  }
+
+  let playTry = 0;
   async function startAudio() {
     if (!active || !soundOn || document.hidden) return;
     const m = active.music;
@@ -291,13 +302,34 @@
       audio.src = m.url;
       audio.currentTime = m.start;
     }
+    if (autoplayDisallowed()) {
+      blocked = true;
+      lastPlayError = 'autoplay-disallowed';
+      paintAll();
+      return;
+    }
     audio.volume = 0;
+    const thisTry = ++playTry;
+    // Safety net: if the song has not started after 1.5 s, show the click-to-play state.
+    setTimeout(() => {
+      if (thisTry === playTry && active && soundOn && !document.hidden && audio.paused && !blocked) {
+        blocked = true;
+        lastPlayError = 'no-start';
+        paintAll();
+      }
+    }, 1500);
     try {
       await audio.play();
+      if (thisTry !== playTry) return;
       blocked = false;
+      lastPlayError = '';
       fadeTo(1);
     } catch (err) {
-      if (err?.name === 'NotAllowedError') blocked = true;
+      if (thisTry !== playTry) return;
+      // NotAllowedError means autoplay is blocked until a click. Firefox can hide the error
+      // name from content scripts, so any failure except a normal abort waits for a click.
+      lastPlayError = String(err?.name || err || 'error');
+      if (lastPlayError !== 'AbortError') blocked = true;
     }
     paintAll();
   }
@@ -323,7 +355,7 @@
     active = post;
     if (prev) paint(prev);
     if (!post) { stopAudio(); return; }
-    // New song: restart at the post's clip start, like the app does.
+    // New song: restart at the post's clip start, as the app does.
     audio.dataset.src = '';
     if (soundOn) {
       cancelAnimationFrame(fadeRaf);
@@ -336,12 +368,12 @@
 
   function toggleSound(post) {
     if (blocked && soundOn && post === active) {
-      // The click is a user gesture, so play is allowed now.
+      // The click is a user gesture, so the browser allows play now.
       startAudio();
       return;
     }
     soundOn = !soundOn;
-    store?.set({ soundOn });
+    saveSetting({ soundOn });
     if (soundOn) {
       if (active !== post) setActive(post);
       else startAudio();
@@ -353,8 +385,8 @@
 
   // ---------- scanning ----------
 
-  function visibleRatio(el) {
-    const r = el.getBoundingClientRect();
+  function visibleRatio(node) {
+    const r = node.getBoundingClientRect();
     if (!r.width || !r.height) return 0;
     const w = Math.min(r.right, innerWidth) - Math.max(r.left, 0);
     const h = Math.min(r.bottom, innerHeight) - Math.max(r.top, 0);
@@ -367,7 +399,7 @@
       seen.add(root);
       let post = posts.get(root);
       if (post && post.code !== code) {
-        // The element was reused for another post.
+        // Instagram reused the element for another post.
         post.ui?.remove();
         if (active === post) setActive(null);
         post = null;
@@ -400,7 +432,7 @@
     pickActive();
   }
 
-  // A video playing with sound on screen, such as an unmuted reel, wins over the song.
+  // A video that plays with sound on screen, such as an unmuted reel, wins over the song.
   function loudVideoOnScreen() {
     for (const v of document.querySelectorAll('video')) {
       if (!v.paused && !v.muted && v.volume > 0 && visibleRatio(v) >= ACTIVE_RATIO) return true;
@@ -410,7 +442,7 @@
 
   function pickActive() {
     if (loudVideoOnScreen()) { setActive(null); return; }
-    const dialog = openDialog();
+    const dialog = openPostDialog();
     let best = null;
     let bestScore = 0;
     for (const post of posts.values()) {
@@ -446,11 +478,14 @@
   new MutationObserver(() => scheduleScan()).observe(document.body, { childList: true, subtree: true });
   addEventListener('scroll', onScroll, { passive: true, capture: true });
   addEventListener('resize', onScroll, { passive: true });
+  // Videos start and stop without DOM changes, so listen for their play events too.
+  document.addEventListener('play', (ev) => { if (ev.target !== audio) pickActive(); }, true);
+  document.addEventListener('volumechange', (ev) => { if (ev.target !== audio) pickActive(); }, true);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { audio.pause(); paintAll(); } else startAudio();
   });
-  // Autoplay is blocked until the first click or key press on the page.
-  for (const type of ['pointerdown', 'keydown']) {
+  // Browsers block autoplay until the first click or key press on the page.
+  for (const type of ['pointerdown', 'pointerup', 'keydown', 'click']) {
     addEventListener(type, () => { if (blocked) startAudio(); }, { capture: true });
   }
   setInterval(scan, 1500);
@@ -462,14 +497,12 @@
       .catch(() => {})
       .finally(() => { paintAll(); scan(); });
     ext.storage.onChanged?.addListener((changes) => {
-      if (changes.soundOn) {
-        soundOn = changes.soundOn.newValue !== false;
-        if (soundOn) startAudio(); else stopAudio();
-      }
+      if (!changes.soundOn) return;
+      soundOn = changes.soundOn.newValue !== false;
+      if (soundOn) startAudio(); else stopAudio();
+      paintAll();
     });
   } else {
     scan();
   }
-
-  window.__imw = { posts, audio, scan, getMusic, parseMusic };
 })();

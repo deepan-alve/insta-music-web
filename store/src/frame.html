@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Postsound store image</title>
+<!-- The overlay uses the extension's real stylesheet, so the store images match the product. -->
+<link rel="stylesheet" href="../../content.css">
+<style>
+  :root {
+    --bg: #121016;
+    --ink: #f6f1ec;
+    --muted: #a49ca8;
+    --card: #000;
+    --line: rgba(255, 255, 255, 0.1);
+    --accent: #e1306c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    width: var(--w);
+    height: var(--h);
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Inter", sans-serif;
+    position: relative;
+  }
+
+  /* Hairline rings: the sound spreading out from the song pill. */
+  .rings {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .rings::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle, transparent 0 46px, rgba(255, 255, 255, 0.055) 46px 47px);
+    -webkit-mask-image: radial-gradient(circle, #000 35%, transparent 70%);
+    mask-image: radial-gradient(circle, #000 35%, transparent 70%);
+  }
+
+  .brand { display: flex; align-items: center; gap: 12px; font: 600 20px "Inter Display", "Inter", sans-serif; letter-spacing: -0.01em; }
+  .brand img { width: 40px; height: 40px; }
+  h1 {
+    margin: 28px 0 16px;
+    font: 600 60px/1.02 "Inter Display", "Inter", sans-serif;
+    letter-spacing: -0.035em;
+  }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { margin: 0; color: var(--muted); font-size: 20px; line-height: 1.45; max-width: 30ch; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; }
+  .chip { padding: 7px 12px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; color: var(--ink); }
+
+  /* A generic social post card. Not a copy of Instagram's UI. */
+  .card {
+    position: absolute;
+    width: var(--cw, 400px);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  }
+  .card-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; font-size: 14px; }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--av, #3a3541) center / cover; }
+  .card-head small { display: block; color: var(--muted); font-size: 12px; }
+  .media { position: relative; aspect-ratio: 4 / 5; background: #222; }
+  .media > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card-foot { padding: 12px 14px 14px; font-size: 14px; }
+  .icons { display: flex; gap: 16px; margin-bottom: 8px; }
+  .icons svg { width: 24px; height: 24px; fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linejoin: round; stroke-linecap: round; }
+  .card.dim { opacity: 0.55; }
+
+  /* Freeze the overlay for a still image. */
+  .ps-pill, .ps-btn { animation: none !important; opacity: 1 !important; }
+  .ps-eq i { animation: none !important; }
+  .ps-eq i:nth-child(1) { transform: scaleY(0.55); }
+  .ps-eq i:nth-child(2) { transform: scaleY(1); }
+  .ps-eq i:nth-child(3) { transform: scaleY(0.4); }
+
+  .popup {
+    position: absolute;
+    width: 300px;
+    height: 214px;
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--line);
+    color-scheme: dark;
+  }
+  .toolbar {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #202124;
+    border: 1px solid var(--line);
+  }
+  .toolbar i { width: 18px; height: 18px; border-radius: 4px; background: #3c4043; display: block; }
+  .toolbar img { width: 18px; height: 18px; display: block; outline: 2px solid rgba(255, 255, 255, 0.25); outline-offset: 4px; border-radius: 3px; }
+
+  .cap { position: absolute; font-size: 13px; color: var(--muted); letter-spacing: 0.02em; }
+</style>
+</head>
+<body>
+<template id="card">
+  <div class="card">
+    <div class="card-head"><span class="avatar"></span><div><b class="user"></b><small class="place"></small></div></div>
+    <div class="media"><img class="photo" alt=""></div>
+    <div class="card-foot">
+      <div class="icons">
+        <svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3.3-6.5L20 4l-.9 3.6A8 8 0 0 1 20 12Z"/></svg>
+        <svg viewBox="0 0 24 24"><path d="m21 3-9.5 9.5M21 3l-6 18-3.5-8.5L3 9l18-6Z"/></svg>
+      </div>
+      <b class="likes"></b>
+    </div>
+  </div>
+</template>
+
+<template id="overlay">
+  <div class="ps-layer">
+    <button type="button" class="ps-pill"><img class="ps-cover" alt=""><span class="ps-text"><span class="ps-marquee"></span></span><span class="ps-eq"><i></i><i></i><i></i></span></button>
+    <button type="button" class="ps-btn"></button>
+  </div>
+</template>
+
+<script>
+  const ICON_ON = '<svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.2L12 18.6V5.4L7.2 9.5H4Z" fill="currentColor"/><path d="M15.5 8.6a4.6 4.6 0 0 1 0 6.8M18.2 6a8.3 8.3 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
+  const ICON_OFF = '<svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.2L12 18.6V5.4L7.2 9.5H4Z" fill="currentColor"/><path d="m15.6 9.4 5.2 5.2m0-5.2-5.2 5.2" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>';
+
+  function card({ x, y, w, user, place, photo, cover, song, likes, state = 'playing', dim = false, avatar }) {
+    const c = document.getElementById('card').content.firstElementChild.cloneNode(true);
+    c.style.left = `${x}px`;
+    c.style.top = `${y}px`;
+    c.style.setProperty('--cw', `${w}px`);
+    if (avatar) c.querySelector('.avatar').style.setProperty('--av', `url(${avatar})`);
+    c.classList.toggle('dim', dim);
+    c.querySelector('.user').textContent = user;
+    c.querySelector('.place').textContent = place;
+    c.querySelector('.photo').src = photo;
+    c.querySelector('.likes').textContent = likes;
+    if (song) {
+      const o = document.getElementById('overlay').content.firstElementChild.cloneNode(true);
+      o.dataset.state = state;
+      o.querySelector('.ps-cover').src = cover;
+      o.querySelector('.ps-marquee').textContent = song;
+      o.querySelector('.ps-btn').innerHTML = state === 'muted' ? ICON_OFF : ICON_ON;
+      if (state === 'muted') o.dataset.state = 'idle';
+      c.querySelector('.media').append(o);
+    }
+    document.body.append(c);
+    return c;
+  }
+
+  function rings(cx, cy, size) {
+    const r = document.createElement('div');
+    r.className = 'rings';
+    Object.assign(r.style, { left: `${cx - size / 2}px`, top: `${cy - size / 2}px`, width: `${size}px`, height: `${size}px` });
+    document.body.prepend(r);
+  }
+
+  function html(markup) {
+    const t = document.createElement('template');
+    t.innerHTML = markup.trim();
+    const node = t.content.firstElementChild;
+    document.body.append(node);
+    return node;
+  }
+
+  const ROOF = 'photo-rooftop.jpg';
+  const BEACH = 'photo-beach.jpg';
+  const ICON = '../../icons/icon-128.png';
+  const SONG_A = 'Late Light · Sunday Static';
+  const SONG_B = 'Tidelines · Marlowe Bay';
+
+  const scenes = {
+    // 1280 x 800: a post playing its song.
+    shot1() {
+      size(1280, 800);
+      rings(880, 360, 1100);
+      html(`<div style="position:absolute;left:96px;top:190px;width:520px">
+        <div class="brand"><img src="${ICON}" alt="">Postsound</div>
+        <h1>Photo posts,<br><em>with their music.</em></h1>
+        <p class="lede" style="max-width:34ch">The song on an Instagram photo now plays on the web too, like it does in the app.</p>
+        <div class="chips"><span class="chip">Feed</span><span class="chip">Profiles</span><span class="chip">Post pages</span><span class="chip">Carousels</span></div>
+      </div>`);
+      card({ x: 690, y: 98, w: 380, user: 'maya.walks', place: 'Lisbon', photo: ROOF, cover: BEACH, song: SONG_A, likes: '2,418 likes', avatar: BEACH });
+    },
+    // 1280 x 800: one song at a time in the feed.
+    shot2() {
+      size(1280, 800);
+      rings(400, 330, 1000);
+      card({ x: 120, y: 60, w: 330, user: 'maya.walks', place: 'Lisbon', photo: ROOF, cover: BEACH, song: SONG_A, likes: '2,418 likes', avatar: BEACH });
+      card({ x: 490, y: 150, w: 290, user: 'noor.and.sea', place: 'Varkala', photo: BEACH, cover: ROOF, song: SONG_B, likes: '981 likes', state: 'idle', dim: true, avatar: ROOF });
+      html(`<div style="position:absolute;left:850px;top:250px;width:360px">
+        <h1 style="font-size:48px;margin-top:0">One song<br>at a time.</h1>
+        <p class="lede" style="font-size:18px">The post on your screen plays. Scroll on and the next one takes over.</p>
+      </div>`);
+    },
+    // 1280 x 800: the toolbar popup.
+    shot3() {
+      size(1280, 800);
+      rings(900, 220, 900);
+      html(`<div style="position:absolute;left:96px;top:250px;width:470px">
+        <h1 style="font-size:52px;margin-top:0">Sound on.<br>Sound off.</h1>
+        <p class="lede" style="font-size:19px">Mute it on any photo, or switch it off from the toolbar. Postsound remembers your choice.</p>
+      </div>`);
+      html(`<div class="toolbar" style="left:796px;top:96px"><i></i><i></i><img src="../../icons/icon-32.png" alt=""><i></i></div>`);
+      html(`<iframe class="popup" src="../../popup.html" style="left:700px;top:148px"></iframe>`);
+      card({ x: 720, y: 400, w: 300, user: 'maya.walks', place: 'Lisbon', photo: ROOF, cover: BEACH, song: SONG_A, likes: '2,418 likes', state: 'muted', avatar: BEACH }).style.clipPath = 'inset(0 0 140px 0 round 14px)';
+    },
+    // 440 x 280: Chrome small promo tile.
+    promo() {
+      size(440, 280);
+      rings(330, 140, 520);
+      html(`<div style="position:absolute;left:36px;top:58px;width:250px">
+        <img src="${ICON}" alt="" style="width:56px;height:56px;margin-left:-6px">
+        <h1 style="font-size:34px;margin:14px 0 8px">Postsound</h1>
+        <p class="lede" style="font-size:15px">Music for Instagram photo posts on the web.</p>
+      </div>`);
+      const c = card({ x: 286, y: 30, w: 170, user: 'maya.walks', place: 'Lisbon', photo: ROOF, cover: BEACH, song: 'Late Light', likes: '', avatar: BEACH });
+      c.querySelector('.card-foot').remove();
+    },
+    // 1400 x 560: Chrome marquee tile.
+    marquee() {
+      size(1400, 560);
+      rings(1010, 280, 1200);
+      html(`<div style="position:absolute;left:110px;top:120px;width:560px">
+        <div class="brand"><img src="${ICON}" alt="">Postsound</div>
+        <h1>Photo posts,<br><em>with their music.</em></h1>
+        <p class="lede">Hear the song on Instagram photos in your browser.</p>
+      </div>`);
+      card({ x: 820, y: 40, w: 300, user: 'maya.walks', place: 'Lisbon', photo: ROOF, cover: BEACH, song: SONG_A, likes: '2,418 likes', avatar: BEACH });
+      card({ x: 1150, y: 120, w: 240, user: 'noor.and.sea', place: 'Varkala', photo: BEACH, cover: ROOF, song: SONG_B, likes: '981 likes', state: 'idle', dim: true, avatar: ROOF });
+    },
+  };
+
+  function size(w, h) {
+    document.body.style.setProperty('--w', `${w}px`);
+    document.body.style.setProperty('--h', `${h}px`);
+  }
+
+  (scenes[location.hash.slice(1)] || scenes.shot1)();
+</script>
+</body>
+</html>

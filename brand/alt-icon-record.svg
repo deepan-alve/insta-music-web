@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Postsound mark: a photo print with a record sliding out behind it. Flat colours, no gradient. -->
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#FF5B2E"/>
+  <rect x="4.5" y="4.5" width="119" height="119" rx="27.5" fill="none" stroke="#000" stroke-opacity=".08"/>
+  <!-- record -->
+  <g transform="translate(78 50)">
+    <circle r="33" fill="#16141A"/>
+    <circle r="26" fill="none" stroke="#2C2932" stroke-width="2"/>
+    <circle r="19" fill="none" stroke="#2C2932" stroke-width="2"/>
+    <circle r="10.5" fill="#FFE3CC"/>
+    <circle r="2.6" fill="#16141A"/>
+  </g>
+  <!-- photo print -->
+  <g transform="rotate(-9 50 74)">
+    <rect x="20" y="40" width="58" height="68" rx="6" fill="#FFF7EE"/>
+    <rect x="26" y="46" width="46" height="42" rx="3" fill="#16141A"/>
+    <circle cx="61" cy="57" r="5.5" fill="#FF5B2E"/>
+    <path d="M26 82l13-14 9 9 7-6 17 15v2H26z" fill="#3A3542"/>
+  </g>
+</svg>

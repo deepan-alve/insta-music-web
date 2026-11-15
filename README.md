@@ -1,6 +1,6 @@
-# Insta Music Web
+# Postsound
 
-An extension for Chrome and Firefox. It plays the song on Instagram photo and carousel posts on instagram.com, as the mobile app does.
+A browser extension for Chrome and Firefox. It plays the music on Instagram photo and carousel posts on instagram.com, as the mobile app does.
 
 ## Why the web has no music
 
@@ -10,52 +10,58 @@ An extension for Chrome and Firefox. It plays the song on Instagram photo and ca
 
 ## What it does
 
-- It finds posts in the feed, on post pages and in the post popup.
+- It finds posts in the feed, on profiles, on post pages and in the post popup.
 - It fetches the media info for each post that comes on screen. It sends one request at a time.
 - It shows a song pill at the top left and a sound button at the bottom right of the photo.
 - It plays the clip of the post that fills most of the screen. The clip loops.
 - It stops the song when you scroll away, close the popup or hide the tab.
 - It gives way to a video that plays with sound on screen.
-- It remembers the sound on or off choice.
+- The toolbar popup and the sound button share one setting. The extension remembers it.
 
 Reels are skipped. They have their own audio.
 
-## Install in Chrome
+## Install for development
 
-1. Open `chrome://extensions`.
-2. Turn on **Developer mode** at the top right.
-3. Click **Load unpacked** and select this folder.
-4. Reload instagram.com.
+Chrome:
 
-After a code change, click the reload icon on the extension card.
+1. Open `chrome://extensions` and turn on **Developer mode**.
+2. Click **Load unpacked** and select this folder.
+3. After a code change, click the reload icon on the Postsound card.
 
-## Install in Firefox
+Firefox:
 
-1. Run `node scripts/build.mjs`.
+1. Run `npm run build`.
 2. Open `about:debugging#/runtime/this-firefox`.
-3. Click **Load Temporary Add-on** and select `dist/insta-music-web-firefox-<version>.xpi`.
-4. Reload instagram.com.
+3. Click **Load Temporary Add-on** and select `dist/postsound-firefox-<version>.xpi`.
 
 Firefox removes a temporary add-on when it closes. Release Firefox keeps only add-ons that Mozilla signed.
-To keep it, sign the `.xpi` as an unlisted add-on on addons.mozilla.org.
 
-The browser can block sound until your first click on the page. The sound button pulses until then.
+## Commands
 
-## Build and test
+| Command | What it does |
+|---|---|
+| `npm test` | Unit tests for `music.js` |
+| `npm run build` | Writes `dist/postsound-chrome-<v>.zip` and `dist/postsound-firefox-<v>.xpi` |
+| `npm run test:firefox` | Headless Firefox, logged out: install, one request per post, no retries |
+| `node scripts/firefox-smoke.mjs --login DIR` | Visible Firefox with a kept profile. Log in once, then it tests the pill, clicks and the feed |
+| `node scripts/store-assets.mjs` | Renders the store images into `store/` |
 
-- `node scripts/build.mjs` writes `dist/chrome/`, `dist/firefox/` and a zip for each.
-- `node scripts/test-firefox.mjs` starts a headless Firefox with an empty profile and installs the `.xpi`.
-  It opens a post and prints the media info requests that the extension sends.
-  The profile is not logged in, so Instagram answers with a redirect to the login page.
+No npm packages are needed. Node 22 or later, `zip`, Firefox and Chrome are enough.
+
+## Publish
+
+`store/LISTING.md` holds the name, the store copy, the privacy answers and the reviewer notes.
+`PRIVACY.md` is the privacy policy text.
 
 ## Files
 
-- `manifest.json`: Manifest V3 for Chrome. It needs only the `storage` permission.
+- `manifest.json`: Manifest V3 for Chrome. `scripts/build.mjs` adds the Firefox keys.
+- `music.js`: pure data helpers. The unit tests cover them.
 - `content.js`: finds posts, fetches the song data and plays it.
-- `content.css`: the pill and the sound button.
-- `icons/`: `icon.svg` is the source for the PNG files.
-- `scripts/build.mjs`: adds the Firefox manifest keys and writes the packages.
-- `scripts/test-firefox.mjs`: the Firefox smoke test.
+- `content.css`: the pill and the sound button. Every class starts with `ps-`.
+- `popup.html`, `popup.css`, `popup.js`: the toolbar popup.
+- `icons/`: rendered from `brand/icon.svg`. `brand/alt-icon-record*.svg` is an unused alternative.
+- `store/`: store images and listing copy. `store/src/` holds their sources.
 
 ## Limits
 

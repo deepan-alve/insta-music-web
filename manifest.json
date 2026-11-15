@@ -1,19 +1,32 @@
 {
   "manifest_version": 3,
-  "name": "Insta Music Web",
-  "version": "0.1.0",
-  "description": "Plays the music on Instagram photo and carousel posts on instagram.com, like the mobile app.",
+  "name": "Postsound: Music for Instagram Photos",
+  "short_name": "Postsound",
+  "version": "1.0.0",
+  "description": "Hear the music on Instagram photo and carousel posts in your browser. See the song and play its clip, like the app.",
   "permissions": ["storage"],
+  "action": {
+    "default_title": "Postsound",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png"
+    }
+  },
   "content_scripts": [
     {
       "matches": ["https://www.instagram.com/*"],
-      "js": ["content.js"],
+      "js": ["music.js", "content.js"],
       "css": ["content.css"],
       "run_at": "document_idle"
     }
   ],
   "icons": {
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "96": "icons/icon-96.png",
+    "128": "icons/icon-128.png"
   }
 }
