@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Insta Music Web",
+  "version": "0.1.0",
+  "description": "Plays the music on Instagram photo and carousel posts on instagram.com, like the mobile app.",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.instagram.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
