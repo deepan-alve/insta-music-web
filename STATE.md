@@ -25,6 +25,7 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 - A fade could set the volume above 1, throw, and leave the song playing. The fade is clamped now. Evidence: the e2e run caught it, then passed.
 - The product site exists in `site/` and builds with `site.Dockerfile` (nginx). Evidence: docker build and curl of every page on 2026-11-16, and a browser check at desktop and phone widths.
 - The Support button opens guestbook.deepanalve.dev/sign with Postsound picked. The guestbook lives in `~/code/guestbook`.
+- Live at https://postsound.deepanalve.dev on Dokploy: project `postsound`, compose id `WUy9JVTzl4sh9U93-uBFH`, file `deploy/docker-compose.yml`. Evidence: on 2026-11-16 /, /privacy and /terms returned 200 with a Let's Encrypt origin cert.
 
 ## Tried and failed
 - Firefox play() can stay pending with no error when autoplay is blocked. Ask `navigator.getAutoplayPolicy` first.
@@ -42,8 +43,7 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 
 ## Next
 1. Reload Postsound in `chrome://extensions`, then check the popup and the About page in his Chrome.
-2. Deploy `site.Dockerfile` on Dokploy at postsound.deepanalve.dev.
-3. Get a public URL for `PRIVACY.md`, a license choice, and the store accounts. See `store/LISTING.md`.
+2. Choose a licence for AMO and create the store accounts. The privacy URL is https://postsound.deepanalve.dev/privacy. See `store/LISTING.md`.
 
 ## Rollback
 Remove the extension at `chrome://extensions` or `about:addons`. No other state exists.

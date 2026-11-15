@@ -87,7 +87,7 @@ Remote code: **No, I am not using remote code.** All code ships in the package. 
 Data usage: check nothing. Postsound collects no user data.
 Then certify all three statements: no selling of data, no use unrelated to the single purpose, no use for credit decisions.
 
-Privacy policy URL: `https://postsound.deepanalve.dev/privacy` (live after the site deploys).
+Privacy policy URL: `https://postsound.deepanalve.dev/privacy`.
 
 ## AMO settings
 
@@ -109,7 +109,6 @@ To test: log in to Instagram, then open https://www.instagram.com/p/DdoVXZ0kYVE/
 
 ## Still needed before upload
 
-1. Deploy postsound.deepanalve.dev, so the privacy URL above is live.
-2. A license choice for AMO, for example MIT or All Rights Reserved.
-3. A Chrome Web Store developer account. Google charges a one-time US$5 fee.
-4. A Firefox Add-ons account. It is free.
+1. A license choice for AMO, for example MIT or All Rights Reserved.
+2. A Chrome Web Store developer account. Google charges a one-time US$5 fee.
+3. A Firefox Add-ons account. It is free.
