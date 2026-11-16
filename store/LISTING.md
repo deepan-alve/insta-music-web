@@ -30,7 +30,7 @@ What it does
 • Plays one song at a time: the post you are looking at
 • Stops when you scroll away, close the post or switch tabs
 • Steps aside when a video with sound is playing
-• Remembers if you turned the sound off
+• Remembers your sound and volume settings
 
 Good to know
 • Reels already have sound, so Postsound leaves them alone
@@ -41,7 +41,7 @@ Support
 Postsound stays free. If it made your feed better, buy me a sticker: a one-of-one sticker on a live wall at guestbook.deepanalve.dev.
 
 Private by design
-Postsound has no servers and collects nothing. It asks instagram.com for the song of the post on your screen, the same way the Instagram website asks for post details. The only thing it saves is your sound on or off choice, in your own browser.
+Postsound has no servers and collects nothing. It asks instagram.com for the song of the post on your screen, the same way the Instagram website asks for post details. The only things it saves are your sound and volume settings, in your own browser.
 
 Postsound is not affiliated with, endorsed by or sponsored by Instagram or Meta. Instagram is a trademark of Meta Platforms, Inc.
 ```
@@ -79,7 +79,7 @@ Plays the music that is attached to Instagram photo and carousel posts when you 
 
 Permission justifications:
 
-- `storage`: `Saves one setting in the browser: whether the user turned the sound on or off.`
+- `storage`: `Saves two settings in the browser: whether the sound is on, and the volume.`
 - Host access to `https://www.instagram.com/*` (content script): `The content script runs only on instagram.com. It reads the post on screen, asks instagram.com for that post's song, and shows a play button on the photo.`
 
 Remote code: **No, I am not using remote code.** All code ships in the package. The audio files are media, not code.
