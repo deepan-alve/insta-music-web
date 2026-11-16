@@ -1,6 +1,20 @@
 # Postsound
 
+[![Website](https://img.shields.io/badge/Website-postsound.deepanalve.dev-ff6a3d)](https://postsound.deepanalve.dev)
+[![License MIT](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
+[![Buy me a sticker](https://img.shields.io/badge/Buy%20me%20a%20sticker-ff5a1f)](https://guestbook.deepanalve.dev/sign?product=postsound)
+
 A browser extension for Chrome and Firefox. It plays the music on Instagram photo and carousel posts on instagram.com, as the mobile app does.
+
+**[Try the demo at postsound.deepanalve.dev](https://postsound.deepanalve.dev)** · **[Buy me a sticker](https://guestbook.deepanalve.dev/sign?product=postsound)**
+
+Firefox Add-ons has version 1.1.0 in review. The Chrome Web Store listing comes next.
+
+![A photo post plays its song](store/screenshot-1.png)
+
+| One song at a time | The toolbar popup |
+|---|---|
+| ![The post on screen plays, the rest stay quiet](store/screenshot-2.png) | ![The popup shows the song, play, sound and volume](store/screenshot-3.png) |
 
 ## Why the web has no music
 
@@ -76,3 +90,19 @@ The extension and the build need no npm packages: Node 22 or later, `zip`, Firef
 - It uses a private Instagram API. Instagram can change it without notice.
 - Instagram can rate limit the requests. On HTTP 429 the script waits 30 seconds.
 - A failed request is not sent again for 15 seconds. A redirect or a bad answer is not sent again in that tab.
+
+## Support
+
+<a href="https://guestbook.deepanalve.dev/sign?product=postsound"><img src="store/sticker.png" width="300" alt="A Postsound sticker with a name on it"></a>
+
+Postsound stays free. If it made your feed better, buy me a sticker. You get a one-of-one sticker made from your name, stuck on a live wall with everyone who keeps Postsound going.
+
+**[Buy me a sticker](https://guestbook.deepanalve.dev/sign?product=postsound)**
+
+## More tools by Deepan
+
+| Tool | What it does |
+|---|---|
+| [Postsound](https://postsound.deepanalve.dev) | Plays the music on Instagram photo posts in your desktop browser. |
+| [GhostShot](https://ghostshot.deepanalve.dev) | Drag-to-capture screenshots for GNOME Shell. |
+| [Handwriting](https://write.deepanalve.dev) | Turns typed text into realistic handwritten pages. |
