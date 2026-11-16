@@ -17,7 +17,7 @@ const files = [
   'config.js', 'tokens.css',
   'popup.html', 'popup.css', 'popup.js',
   'about.html', 'about.css', 'about.js',
-  'fonts/Geist-Variable.woff2', 'fonts/OFL-Geist.txt', 'icons/LICENSE-lucide.txt', 'brand/sticker.webp',
+  'fonts/Geist-Variable.woff2', 'fonts/OFL-Geist.txt', 'icons/LICENSE-lucide.txt', 'brand/sticker.webp', 'LICENSE',
   ...Object.values(base.icons),
 ];
 

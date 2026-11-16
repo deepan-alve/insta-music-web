@@ -93,7 +93,7 @@ Privacy policy URL: `https://postsound.deepanalve.dev/privacy`.
 
 - Distribution: **On this site** (listed).
 - Firefox for Android: compatible. The package sets `gecko_android`.
-- License: pick one in the form. See "Still needed".
+- License: **MIT License** (Deepan chose it on 2026-11-16). The file `LICENSE` ships in the package.
 - Source code upload: **not needed**. The package has no build step, minifier or bundler. The files are the source.
 - Data collection: the manifest declares `data_collection_permissions: none`.
 
@@ -109,6 +109,5 @@ To test: log in to Instagram, then open https://www.instagram.com/p/DdoVXZ0kYVE/
 
 ## Still needed before upload
 
-1. A license choice for AMO, for example MIT or All Rights Reserved.
-2. A Chrome Web Store developer account. Google charges a one-time US$5 fee.
-3. A Firefox Add-ons account. It is free.
+1. A Chrome Web Store developer account. Google charges a one-time US$5 fee.
+2. A Firefox Add-ons account. It is free.
