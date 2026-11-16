@@ -28,6 +28,15 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 - Live at https://postsound.deepanalve.dev on Dokploy: project `postsound`, compose id `WUy9JVTzl4sh9U93-uBFH`, file `deploy/docker-compose.yml`. Evidence: on 2026-11-16 /, /privacy and /terms returned 200 with a Let's Encrypt origin cert.
 
 - v1.0.1: support is "Buy me a sticker" in the popup, the About page and the website, linking to the sticker wall at guestbook.deepanalve.dev/sign?product=postsound. Store packages built in dist/ (postsound-chrome-1.0.1.zip, postsound-firefox-1.0.1.xpi). Not uploaded to the stores yet. The website is deployed.
+- v1.1.0 redesign, "Live feed", chosen by Deepan on 2026-11-16 over "Record deck".
+  - The site home (site/index.html) is a working demo feed. The middle post plays a demo tune made by Web Audio. It uses the real overlay and the real popup in a frame.
+  - The old home page is at /classic, with noindex.
+  - The popup is the "Live card" (popup.css). The old style is in design/popup-v1.css. The popup prefers the full-size cover_artwork_uri.
+  - The About page has the sticker on the support card, and a heavier title.
+  - The site CSP now allows its own scripts and frames.
+  - Evidence on 2026-11-16: `npm test` 11 passed, `npm run test:e2e` 25 passed, and the Docker image served every page. Claude checked the built site at 320 to 1440 px: no sideways scroll, no console errors, and the feed and popup controls worked in Chrome.
+  - Packages postsound-chrome-1.1.0.zip and postsound-firefox-1.1.0.xpi are built, not uploaded. Store images are re-rendered.
+  - The B concept (record deck) stays in site/concepts/record.html. The Docker image leaves it out.
 ## Tried and failed
 - Firefox play() can stay pending with no error when autoplay is blocked. Ask `navigator.getAutoplayPolicy` first.
 - A killed test Firefox counts as a startup crash. After a few, Firefox restarts into Troubleshoot Mode and drops the BiDi flag. The test profile turns that check off.
@@ -43,6 +52,7 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 - No store has reviewed the package. The gradient icon looks like Instagram's colours, so review may object.
 
 ## Next
+0. Push and redeploy the site, then check https://postsound.deepanalve.dev with sound.
 1. Reload Postsound in `chrome://extensions`, then check the popup and the About page in his Chrome.
 2. Choose a licence for AMO and create the store accounts. The privacy URL is https://postsound.deepanalve.dev/privacy. See `store/LISTING.md`.
 

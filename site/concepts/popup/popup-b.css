@@ -1,0 +1,144 @@
+/* Hallmark · concept B popup "Deck" · restyles the real popup.html markup, so popup.js keeps working.
+ * Idea: a small machine. The cover spins as a record, the song runs across an LCD, the keys press in.
+ */
+body {
+  --g-body:    oklch(93.5% 0.003 95);
+  --g-paper:   oklch(88.5% 0.004 95);
+  --g-ink:     oklch(20% 0.006 60);
+  --g-ink-2:   oklch(42% 0.008 60);
+  --g-ink-3:   oklch(50% 0.008 60);
+  --g-rule:    oklch(20% 0.006 60 / 0.16);
+  --g-rule-2:  oklch(20% 0.006 60 / 0.3);
+  --g-vinyl:   oklch(17% 0.004 60);
+  --g-accent:  oklch(60% 0.19 36);
+  --g-lcd:     oklch(27% 0.02 140);
+  --g-lcd-ink: oklch(86% 0.13 125);
+  --g-lcd-dim: oklch(62% 0.07 130);
+  --g-shadow:  oklch(20% 0.006 60 / 0.22);
+  color-scheme: light;
+  width: 320px;
+  margin: 0;
+  padding: var(--space-xs);
+  background: var(--g-body);
+  color: var(--g-ink);
+  font: 400 var(--text-sm) / 1.4 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+* { box-sizing: border-box; }
+.icon { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+.head { display: flex; align-items: center; gap: var(--space-2xs); padding: 0 2px var(--space-xs); }
+.logo { border-radius: 5px; }
+h1 { margin: 0; font: 600 var(--text-md) / 1 var(--font-display); letter-spacing: -0.02em; text-transform: lowercase; }
+.ver { margin-left: auto; color: var(--g-ink-3); font-size: var(--text-2xs); font-variant-numeric: tabular-nums; }
+
+/* ---------- now: record, LCD, play key ---------- */
+.now {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs);
+  border-radius: 14px;
+  background: var(--g-paper);
+  box-shadow: inset 0 2px 4px var(--g-shadow);
+}
+.art {
+  width: 58px; height: 58px; border-radius: 50%;
+  display: grid; place-items: center;
+  background:
+    radial-gradient(circle, var(--g-body) 0 3px, transparent 3.5px),
+    repeating-radial-gradient(circle, oklch(100% 0 0 / 0.06) 0 1px, transparent 1px 3px),
+    var(--g-vinyl);
+  color: var(--g-ink-3);
+  box-shadow: 0 2px 5px var(--g-shadow);
+  position: relative;
+}
+.art .icon { width: 18px; height: 18px; color: oklch(70% 0.004 95); }
+/* popup.js puts the cover in background-image. Shown small in the middle, it becomes the record label. */
+.art.has-cover { background-color: var(--g-vinyl); background-size: 30px 30px; background-position: center; background-repeat: no-repeat; }
+.art.has-cover::before {
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--g-body) 0 2.5px, transparent 3px 14px, var(--g-vinyl) 14.5px),
+    transparent;
+}
+.art.has-cover::after { content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background: repeating-radial-gradient(circle, transparent 0 16px, oklch(100% 0 0 / 0.07) 16px 17px, transparent 17px 19px); }
+.art.has-cover { animation: spin 1.8s linear infinite; animation-play-state: paused; }
+[data-mode="playing"] .art.has-cover { animation-play-state: running; }
+.art.has-cover .icon { display: none; }
+@keyframes spin { to { rotate: 360deg; } }
+
+.meta {
+  display: grid; gap: 1px; min-width: 0;
+  padding: 7px 9px; border-radius: 8px;
+  background: var(--g-lcd); color: var(--g-lcd-ink);
+  box-shadow: inset 0 2px 4px oklch(0% 0 0 / 0.5);
+}
+.label { display: flex; align-items: center; gap: 6px; color: var(--g-lcd-dim); font-size: 9.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+[data-mode="blocked"] .label { color: oklch(85% 0.14 85); }
+.title, .artist { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; text-transform: uppercase; letter-spacing: 0.08em; }
+.title { font-size: var(--text-xs); font-weight: 700; }
+.artist { font-size: 10px; color: var(--g-lcd-dim); font-weight: 600; }
+.artist:empty { display: none; }
+.eq { display: none; align-items: flex-end; gap: 1.5px; height: 8px; }
+.eq i { width: 2px; height: 100%; background: currentColor; transform-origin: bottom; animation: eq 900ms var(--ease-in-out) infinite; }
+.eq i:nth-child(2) { animation-duration: 760ms; animation-delay: -300ms; }
+.eq i:nth-child(3) { animation-duration: 1040ms; animation-delay: -600ms; }
+[data-mode="playing"] .eq { display: flex; color: var(--g-lcd-ink); }
+@keyframes eq { 0%, 100% { transform: scaleY(0.3); } 50% { transform: scaleY(1); } }
+
+.action {
+  width: 44px; height: 46px; display: grid; place-items: center;
+  border: 0; border-radius: 10px; cursor: pointer;
+  background: var(--g-accent); color: oklch(98% 0.003 60);
+  box-shadow: inset 0 -3px 0 oklch(0% 0 0 / 0.25), 0 2px 4px var(--g-shadow);
+  transition: transform var(--dur-press) var(--ease-out), box-shadow var(--dur-press) var(--ease-out);
+}
+.action:active { transform: translateY(2px); box-shadow: inset 0 -1px 0 oklch(0% 0 0 / 0.25), 0 1px 1px var(--g-shadow); }
+.action:disabled { opacity: 0.4; cursor: default; }
+.action .icon { width: 16px; height: 16px; display: none; }
+.action .i-play, .action .i-pause { fill: currentColor; stroke: none; }
+[data-mode="off-site"] .i-open, [data-mode="ready"] .i-play, [data-mode="blocked"] .i-play,
+[data-mode="empty"] .i-play, [data-mode="playing"] .i-pause { display: block; }
+[data-mode="off-site"] .action, [data-mode="empty"] .action { background: var(--g-body); color: var(--g-ink); box-shadow: inset 0 -3px 0 var(--g-rule-2), 0 2px 4px var(--g-shadow); }
+
+/* ---------- settings: a power key and a fader ---------- */
+.settings { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: var(--space-2xs); border-top: 1px solid var(--g-rule); }
+.row { display: flex; align-items: center; gap: var(--space-xs); min-height: 46px; padding: 0 2px; border-bottom: 1px solid var(--g-rule); }
+label.row { cursor: pointer; }
+.row-title { flex: 1; font-weight: 500; }
+.vol-icon { width: 15px; height: 15px; color: var(--g-ink-3); flex: none; }
+.vol-out { width: 34px; text-align: right; color: var(--g-ink-3); font-size: var(--text-2xs); font-variant-numeric: tabular-nums; }
+
+/* the switch is a small key with a light that is on when sound is on */
+.switch {
+  appearance: none; flex: none; margin: 0; cursor: pointer; position: relative;
+  width: 44px; height: 28px; border-radius: 8px;
+  background: var(--g-body);
+  box-shadow: inset 0 -3px 0 var(--g-rule-2), 0 1px 3px var(--g-shadow);
+  transition: transform var(--dur-press) var(--ease-out), box-shadow var(--dur-press) var(--ease-out);
+}
+.switch::after { content: ""; position: absolute; left: 50%; top: 9px; translate: 0 0; width: 14px; height: 4px; margin-left: -7px; border-radius: 2px; background: var(--g-rule-2); transition: background-color var(--dur-short) var(--ease-out), box-shadow var(--dur-short) var(--ease-out); }
+.switch:checked { background: var(--g-body); transform: translateY(1px); box-shadow: inset 0 -1px 0 var(--g-rule-2), 0 1px 1px var(--g-shadow); }
+.switch:checked::after { translate: 0 0; background: var(--g-accent); box-shadow: 0 0 6px oklch(60% 0.19 36 / 0.6); }
+
+/* the fader: a slot with tick marks and a flat cap */
+.volume { flex: 1; min-width: 0; appearance: none; height: 24px; margin: 0; cursor: pointer; background:
+  repeating-linear-gradient(90deg, var(--g-rule-2) 0 1px, transparent 1px 10%) center / 100% 8px no-repeat; }
+.volume::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: var(--g-vinyl); }
+.volume::-webkit-slider-thumb { appearance: none; width: 12px; height: 20px; margin-top: -8px; border-radius: 3px; background: var(--g-body); box-shadow: inset 0 -2px 0 var(--g-rule-2), inset 0 0 0 1px var(--g-rule), 0 1px 3px var(--g-shadow); }
+.volume::-moz-range-track { height: 4px; border-radius: 2px; background: var(--g-vinyl); }
+.volume::-moz-range-thumb { width: 12px; height: 20px; border: 0; border-radius: 3px; background: var(--g-body); box-shadow: inset 0 -2px 0 var(--g-rule-2), 0 1px 3px var(--g-shadow); }
+.volume:disabled { opacity: 0.4; }
+
+/* ---------- links: lowercase labels in a ruled row ---------- */
+.links { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: var(--space-2xs); }
+.links a { padding: 8px 2px 2px; color: var(--g-ink-2); font-size: var(--text-2xs); font-weight: 600; text-decoration: none; text-transform: lowercase; white-space: nowrap; }
+.links a + a { padding-left: 10px; border-left: 1px solid var(--g-rule); }
+.links a:hover { color: var(--g-ink); }
+.links a:first-child { color: var(--g-accent); }
+:focus-visible { outline: 2px solid var(--g-accent); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

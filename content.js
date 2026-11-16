@@ -513,7 +513,7 @@
       soundOn,
       blocked: Boolean(active && blocked && soundOn),
       playing: Boolean(active && soundOn && !blocked && !audio.paused),
-      song: m ? { title: m.title, artist: m.artist, cover: m.cover } : null,
+      song: m ? { title: m.title, artist: m.artist, cover: m.art || m.cover } : null,
     };
   }
 

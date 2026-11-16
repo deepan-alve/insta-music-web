@@ -57,6 +57,7 @@ test('parseMusic reads a licensed song with its clip window', () => {
     title: 'Oh, What A World',
     artist: 'Kacey Musgraves',
     cover: 'https://cdn.example/cover.jpg',
+    art: 'https://cdn.example/cover.jpg',
     url: 'https://cdn.example/song.mp4',
     start: 36.05,
     end: 86.05,

@@ -217,7 +217,7 @@
         <h1 style="font-size:52px;margin-top:0">Sound on.<br>Sound off.</h1>
         <p class="lede" style="font-size:19px">Mute any photo, set the volume, or switch it off from the toolbar. Postsound remembers your choice.</p>
       </div>`);
-      const frame = html(`<iframe class="popup" src="../../popup.html" style="left:690px;top:110px;width:320px;height:282px"></iframe>`);
+      const frame = html(`<iframe class="popup" src="../../popup.html" style="left:690px;top:60px;width:320px;height:417px"></iframe>`);
       // Show the popup as it looks while a song plays. Its script needs the extension API, so set the card by hand.
       frame.addEventListener('load', () => {
         const d = frame.contentDocument;
@@ -225,13 +225,13 @@
         d.getElementById('label').textContent = 'Now playing';
         d.getElementById('title').textContent = 'Late Light';
         d.getElementById('artist').textContent = 'Sunday Static';
-        d.getElementById('version').textContent = 'v1.0.0';
+        d.getElementById('version').textContent = 'v1.1.0';
         const art = d.getElementById('art');
         art.classList.add('has-cover');
         art.style.backgroundImage = `url(${new URL(BEACH, location.href).href})`;
         d.getElementById('action').disabled = false;
       });
-      card({ x: 700, y: 430, w: 300, user: 'maya.walks', place: 'Lisbon', photo: ROOF, cover: BEACH, song: SONG_A, likes: '2,418 likes', state: 'muted', avatar: BEACH }).style.clipPath = 'inset(0 0 240px 0 round 14px)';
+      card({ x: 700, y: 512, w: 300, user: 'maya.walks', place: 'Lisbon', photo: ROOF, cover: BEACH, song: SONG_A, likes: '2,418 likes', state: 'muted', avatar: BEACH }).style.clipPath = 'inset(0 0 320px 0 round 14px)';
     },
     // QA only, not a store image: the click-to-play state.
     qa() {

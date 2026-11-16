@@ -257,7 +257,7 @@ async function waitState(p, state, ms = 5000) {
   const popup = await context.newPage();
   await popup.setViewportSize({ width: 320, height: 400 });
   await popup.goto(`chrome-extension://${id}/popup.html`);
-  const wraps = await popup.evaluate(() => [...document.querySelectorAll('.links a')].filter((a) => a.getClientRects().length > 1 || a.offsetHeight > 24).map((a) => a.textContent));
+  const wraps = await popup.evaluate(() => [...document.querySelectorAll('.links a')].filter((a) => a.getClientRects().length > 1 || a.scrollWidth > a.clientWidth).map((a) => a.textContent));
   check('popup links stay on one line', wraps.length === 0, wraps.join(', '));
   await cleanup();
 }

@@ -1,0 +1,3 @@
+/* The site's framed copy of the popup. The popup styles come from /popup.css. */
+body { margin: 0; overflow: hidden; }
+.links a { cursor: pointer; }

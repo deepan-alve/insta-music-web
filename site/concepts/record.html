@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Postsound: hear the music on Instagram photo posts, on desktop</title>
+  <meta name="description" content="Instagram photo and carousel posts play their song in the app but stay silent on instagram.com. Postsound is a free Chrome and Firefox extension that plays them in your browser.">
+  <meta name="theme-color" content="#d9d8d3">
+  <link rel="icon" href="/site/img/favicon-32.png" type="image/png">
+  <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/tokens.css">
+  <link rel="stylesheet" href="record.css">
+</head>
+<body>
+  <header class="bar">
+    <a class="mark" href="#top"><img src="/icons/icon-32.png" alt="" width="22" height="22"><span>postsound</span></a>
+    <nav class="bar-nav" aria-label="Sections">
+      <a href="#spec"><b>spec</b><span>what it does</span></a>
+      <a href="#faq"><b>help</b><span>questions</span></a>
+      <a href="https://guestbook.deepanalve.dev/sign?product=postsound"><b>sticker</b><span>keep it free</span></a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="tag">PS-1 · browser extension · free</p>
+        <h1>Instagram photos have songs. Your browser never played them.</h1>
+        <p class="lede">Postsound plays the song on every photo post on instagram.com, from the part the poster picked.</p>
+        <div class="cta">
+          <span class="key dark is-soon" aria-disabled="true">Chrome <small>soon</small></span>
+          <span class="key is-soon" aria-disabled="true">Firefox <small>soon</small></span>
+        </div>
+      </div>
+
+      <div class="deck" id="deck">
+        <div class="plinth">
+          <div class="platter" id="platter">
+            <div class="record" id="record">
+              <div class="label" id="label"></div>
+            </div>
+            <span class="spindle" aria-hidden="true"></span>
+          </div>
+          <svg class="arm" id="arm" viewBox="0 0 120 300" aria-hidden="true">
+            <circle cx="90" cy="30" r="22" class="arm-base"/>
+            <circle cx="90" cy="30" r="9" class="arm-pivot"/>
+            <path d="M90 30 L96 190 L70 262" class="arm-rod"/>
+            <rect x="56" y="252" width="26" height="34" rx="4" transform="rotate(25 69 269)" class="arm-head"/>
+          </svg>
+          <div class="panel">
+            <div class="lcd" aria-live="polite"><span class="lcd-track" id="lcd">SIDE A · PICK A POST</span></div>
+            <button class="key play" id="play" type="button" aria-label="Play">
+              <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><polygon points="7 4 20 12 7 20 7 4"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></svg>
+            </button>
+            <label class="fader"><span>vol</span><input id="vol" type="range" min="0" max="100" value="80" aria-label="Volume"></label>
+          </div>
+          <img class="slap" src="img/sticker.webp" alt="" width="150" height="88">
+        </div>
+        <div class="crate" role="radiogroup" aria-label="Pick a post">
+          <button class="sleeve" type="button" role="radio" aria-checked="true" data-tune="0" data-img="img/photo-rooftop.webp"><img src="img/photo-rooftop.webp" alt="" width="120" height="150"><span>maya.walks</span></button>
+          <button class="sleeve" type="button" role="radio" aria-checked="false" data-tune="1" data-img="img/photo-beach.webp"><img src="img/photo-beach.webp" alt="" width="120" height="150"><span>noor.film</span></button>
+          <button class="sleeve" type="button" role="radio" aria-checked="false" data-tune="2" data-img="img/photo-cafe.webp"><img src="img/photo-cafe.webp" alt="" width="120" height="150"><span>ira.slowly</span></button>
+          <button class="sleeve" type="button" role="radio" aria-checked="false" data-tune="3" data-img="img/photo-drive.webp"><img src="img/photo-drive.webp" alt="" width="120" height="150"><span>kai.after.dark</span></button>
+        </div>
+        <p class="note">Demo tunes, made by your browser. On Instagram you hear the poster’s song.</p>
+      </div>
+    </section>
+
+    <section class="spec" id="spec" aria-labelledby="spec-h">
+      <h2 id="spec-h"><span>01</span>spec sheet</h2>
+      <dl class="sheet">
+        <div><dt>plays on</dt><dd>Home feed, profiles, post pages and the post popup.</dd></div>
+        <div><dt>plays when</dt><dd>The post sits in the middle of your screen. One song at a time.</dd></div>
+        <div><dt>stops when</dt><dd>You scroll past, close the post, switch tabs, or a video plays with sound.</dd></div>
+        <div><dt>skips</dt><dd>Reels. They already have their own sound.</dd></div>
+        <div><dt>controls</dt><dd>Mute any photo. Set the volume or switch it off from the toolbar.</dd></div>
+        <div><dt>collects</dt><dd>Nothing. No servers, no analytics. Your sound settings stay in your browser.</dd></div>
+        <div><dt>runs in</dt><dd>Chrome and Firefox on desktop, and Firefox for Android.</dd></div>
+        <div><dt>price</dt><dd>Free. No account.</dd></div>
+      </dl>
+    </section>
+
+    <section class="faq" id="faq" aria-labelledby="faq-h">
+      <h2 id="faq-h"><span>02</span>help</h2>
+      <div class="faq-list">
+        <details><summary>No sound when I open Instagram?</summary><p>Browsers hold sound until you click the page once. The button on the photo pulses until then.</p></details>
+        <details><summary>Is it made by Instagram?</summary><p>No. Postsound is independent and not affiliated with Instagram or Meta.</p></details>
+        <details><summary>Something broke?</summary><p>Open the popup and pick Report a problem, or write to <a href="mailto:contact@deepanalve.dev">contact@deepanalve.dev</a>.</p></details>
+        <details><summary>Where is the privacy policy?</summary><p>Here: <a href="/privacy">postsound.deepanalve.dev/privacy</a>.</p></details>
+      </div>
+    </section>
+
+    <section class="support" aria-labelledby="support-h">
+      <h2 id="support-h"><span>03</span>keep it free</h2>
+      <p>Buy me a sticker. You get a one-of-one sticker made from your name, on a live wall with everyone who keeps Postsound going.</p>
+      <a class="key dark" href="https://guestbook.deepanalve.dev/sign?product=postsound">Buy me a sticker</a>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>postsound PS-1</span>
+    <span>by <a href="https://deepanalve.dev">Deepan Alve</a></span>
+    <nav aria-label="Legal"><a href="/privacy">privacy</a><a href="/terms">terms</a><a href="mailto:contact@deepanalve.dev">contact</a></nav>
+  </footer>
+
+  <script src="demo-audio.js"></script>
+  <script src="record.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Popup options</title>
+  <link rel="stylesheet" href="/tokens.css">
+  <style>
+    @font-face { font-family: "Geist"; src: url("/fonts/Geist-Variable.woff2") format("woff2"); font-weight: 100 900; }
+    body { margin: 0; padding: 32px; background: oklch(80% 0.004 95); font: 14px/1.4 var(--font-body); color: oklch(20% 0.006 60); }
+    h2 { margin: 28px 0 12px; font-size: 18px; letter-spacing: -0.01em; }
+    h2 span { color: oklch(45% 0.008 60); font-weight: 450; }
+    .row { display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-start; }
+    figure { margin: 0; display: grid; gap: 6px; }
+    figcaption { font-size: 12px; color: oklch(40% 0.008 60); }
+    iframe { border: 0; width: 320px; border-radius: 12px; box-shadow: 0 10px 30px -12px oklch(0% 0 0 / 0.35); background: transparent; }
+  </style>
+</head>
+<body>
+  <h2>Current <span>v1.0.1, for comparison</span></h2>
+  <div class="row" data-css="/popup.css"></div>
+  <h2>A · Live card <span>the song is the hero, follows light and dark</span></h2>
+  <div class="row" data-css="/site/concepts/popup/popup-a.css"></div>
+  <h2>B · Deck <span>a small machine: the cover spins as a record, the song runs on an LCD</span></h2>
+  <div class="row" data-css="/site/concepts/popup/popup-b.css" data-only-light></div>
+  <script src="board.js"></script>
+</body>
+</html>

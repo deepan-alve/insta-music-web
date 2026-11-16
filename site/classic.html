@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Postsound: hear the music on Instagram photo posts, on desktop</title>
+  <meta name="description" content="Instagram photo and carousel posts play their song in the app but stay silent on instagram.com. Postsound is a free Chrome and Firefox extension that plays them in your browser.">
+  <link rel="canonical" href="https://postsound.deepanalve.dev/">
+  <meta name="robots" content="noindex">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://postsound.deepanalve.dev/">
+  <meta property="og:title" content="Postsound: music for Instagram photo posts on desktop">
+  <meta property="og:description" content="A free browser extension that plays the song on Instagram photo posts, like the app does.">
+  <meta property="og:image" content="https://postsound.deepanalve.dev/img/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#f7f4f1">
+  <link rel="icon" href="/img/favicon-32.png" type="image/png">
+  <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/tokens.css">
+  <link rel="stylesheet" href="/site.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Postsound",
+    "applicationCategory": "BrowserApplication",
+    "operatingSystem": "Chrome, Firefox",
+    "description": "Plays the music attached to Instagram photo and carousel posts on instagram.com.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Person", "name": "Deepan Alve", "url": "https://deepanalve.dev" }
+  }
+  </script>
+</head>
+<body>
+  <header class="bar">
+    <a class="mark" href="/"><img src="/img/icon-128.png" alt="" width="24" height="24">Postsound</a>
+    <a class="bar-link" href="https://guestbook.deepanalve.dev">Guestbook</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Instagram photos, with their music.</h1>
+        <p class="lede">In the app, photo and carousel posts play their song. On instagram.com they stay silent. Postsound plays them in your browser, from the part of the song the poster picked.</p>
+        <div class="cta">
+          <span class="btn primary is-soon" aria-disabled="true">Chrome Web Store <small>soon</small></span>
+          <span class="btn is-soon" aria-disabled="true">Firefox Add-ons <small>soon</small></span>
+        </div>
+        <p class="fine">Free. No account. No tracking.</p>
+      </div>
+      <figure class="hero-shot">
+        <img src="/img/post.webp" width="400" height="625" alt="An Instagram photo post with a Postsound song pill at the top left and a sound button at the bottom right" fetchpriority="high">
+      </figure>
+    </section>
+
+    <section class="why" aria-labelledby="why-h">
+      <h2 id="why-h">Why Instagram on the web has no music</h2>
+      <div class="why-body">
+        <p>The Instagram app plays a photo post’s song from the post’s music data. The website loads the same posts without that data, so the photo shows and the song never starts.</p>
+        <p>Postsound asks instagram.com for each post’s song, the way the site asks for any post detail, and plays the clip the poster chose. Reels already have sound, so it leaves them alone.</p>
+      </div>
+    </section>
+
+    <section class="feature" aria-labelledby="feat-h">
+      <div class="feature-copy">
+        <h2 id="feat-h">It behaves like the app</h2>
+        <ul class="points">
+          <li><b>One song at a time.</b> The post you are looking at plays. Scroll on and the next one takes over.</li>
+          <li><b>Everywhere you browse.</b> The home feed, profiles, post pages and the post popup.</li>
+          <li><b>Stays out of the way.</b> It stops when you scroll past, close the post or switch tabs, and goes quiet when a video plays with sound.</li>
+          <li><b>Your volume, your call.</b> Mute any photo, set the volume, or switch it off from the toolbar.</li>
+        </ul>
+      </div>
+      <figure class="feature-shot">
+        <img src="/img/popup.webp" width="340" height="300" alt="The Postsound toolbar popup showing the song that plays, a switch and a volume slider" loading="lazy">
+      </figure>
+    </section>
+
+    <section class="faq" aria-labelledby="faq-h">
+      <h2 id="faq-h">Questions</h2>
+      <details>
+        <summary>Is Postsound free?</summary>
+        <p>Yes. It has no paid tier, no ads and no account. If you want to support it, you can <a href="https://guestbook.deepanalve.dev/sign?product=postsound">buy me a sticker</a>.</p>
+      </details>
+      <details>
+        <summary>What data does it collect?</summary>
+        <p>None. It has no servers. It asks instagram.com for the song of the post on your screen, and saves only your sound settings in your browser. Read the <a href="/privacy">privacy policy</a>.</p>
+      </details>
+      <details>
+        <summary>Why is there no sound when I open Instagram?</summary>
+        <p>Browsers hold back sound until you click the page once. The button on the photo pulses until then. In Firefox you can also allow audio for instagram.com from the play icon in the address bar.</p>
+      </details>
+      <details>
+        <summary>Does it work on Reels?</summary>
+        <p>Reels already play their own sound, so Postsound skips them. It works on photo and carousel posts that have a song.</p>
+      </details>
+      <details>
+        <summary>Does it work on my phone?</summary>
+        <p>The Instagram app already plays photo music. Postsound is for desktop browsers. The Firefox version also runs on Firefox for Android.</p>
+      </details>
+      <details>
+        <summary>Is it made by Instagram?</summary>
+        <p>No. Postsound is an independent extension and is not affiliated with Instagram or Meta.</p>
+      </details>
+    </section>
+
+    <section class="support" aria-labelledby="support-h">
+      <div>
+        <h2 id="support-h">Keep it going</h2>
+        <p>Postsound stays free. The people who keep it going each get a one-of-one sticker on a live wall.</p>
+      </div>
+      <a class="btn primary" href="https://guestbook.deepanalve.dev/sign?product=postsound">Buy me a sticker</a>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span class="foot-mark">Postsound</span>
+    <span>by <a href="https://deepanalve.dev">Deepan Alve</a></span>
+    <nav aria-label="Legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="mailto:contact@deepanalve.dev">Contact</a></nav>
+  </footer>
+</body>
+</html>

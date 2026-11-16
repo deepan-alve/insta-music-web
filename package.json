@@ -1,6 +1,6 @@
 {
   "name": "postsound",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "private": true,
   "description": "Browser extension that plays the music on Instagram photo and carousel posts on the web.",
   "scripts": {

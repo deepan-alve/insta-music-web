@@ -46,7 +46,9 @@
       return {
         title: asset.title || 'Unknown song',
         artist: asset.display_artist || '',
-        cover: asset.cover_artwork_thumbnail_uri || '',
+        cover: asset.cover_artwork_thumbnail_uri || asset.cover_artwork_uri || '',
+        // The popup shows the cover large, so it prefers the full-size artwork.
+        art: asset.cover_artwork_uri || asset.cover_artwork_thumbnail_uri || '',
         url,
         ...clip(use?.audio_asset_start_time_in_ms, use?.overlap_duration_in_ms),
       };
@@ -57,6 +59,7 @@
         title: orig.original_audio_title || 'Original audio',
         artist: orig.ig_artist?.username || '',
         cover: orig.ig_artist?.profile_pic_url || '',
+        art: orig.ig_artist?.profile_pic_url || '',
         url: orig.progressive_download_url,
         ...clip(orig.audio_asset_start_time_in_ms, orig.overlap_duration_in_ms || orig.duration_in_ms),
       };

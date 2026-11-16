@@ -12,11 +12,13 @@
   <meta property="og:description" content="A free browser extension that plays the song on Instagram photo posts, like the app does.">
   <meta property="og:image" content="https://postsound.deepanalve.dev/img/og.png">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#f7f4f1">
+  <meta name="theme-color" content="#16120f">
   <link rel="icon" href="/img/favicon-32.png" type="image/png">
   <link rel="preload" href="/fonts/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/tokens.css">
-  <link rel="stylesheet" href="/site.css">
+  <!-- The real overlay styles from the extension, so the demo posts show what Instagram gets. -->
+  <link rel="stylesheet" href="/content.css">
+  <link rel="stylesheet" href="/home.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -32,83 +34,102 @@
 </head>
 <body>
   <header class="bar">
-    <a class="mark" href="/"><img src="/img/icon-128.png" alt="" width="24" height="24">Postsound</a>
-    <a class="bar-link" href="https://guestbook.deepanalve.dev">Guestbook</a>
+    <a class="mark" href="#top"><img src="/img/icon-128.png" alt="" width="22" height="22">Postsound</a>
+    <nav class="bar-nav" aria-label="Sections">
+      <a href="#how">How it works</a>
+      <a href="#faq">Questions</a>
+      <a href="https://guestbook.deepanalve.dev/sign?product=postsound">Buy me a sticker</a>
+    </nav>
+    <span class="get is-soon" aria-disabled="true">Add to Chrome <small>soon</small></span>
   </header>
 
-  <main>
+  <main id="top">
     <section class="hero">
       <div class="hero-copy">
-        <h1>Instagram photos, with their music.</h1>
-        <p class="lede">In the app, photo and carousel posts play their song. On instagram.com they stay silent. Postsound plays them in your browser, from the part of the song the poster picked.</p>
+        <p class="kicker"><span class="dot" aria-hidden="true"></span>For instagram.com on desktop</p>
+        <h1>Photo posts,<br>with their <span class="hl">song</span>.</h1>
+        <p class="lede">In the app, a photo post plays the song the poster picked. On the web it stays silent. Postsound fixes that.</p>
         <div class="cta">
-          <span class="btn primary is-soon" aria-disabled="true">Chrome Web Store <small>soon</small></span>
-          <span class="btn is-soon" aria-disabled="true">Firefox Add-ons <small>soon</small></span>
+          <span class="btn primary is-soon" aria-disabled="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><path d="M21.17 8H12"/><path d="M3.95 6.06 8.54 14"/><path d="M10.88 21.94 15.46 14"/></svg>
+            Chrome <small>soon</small></span>
+          <span class="btn is-soon" aria-disabled="true">Firefox <small>soon</small></span>
         </div>
-        <p class="fine">Free. No account. No tracking.</p>
+        <p class="fine">Free. No account. Collects nothing.</p>
       </div>
-      <figure class="hero-shot">
-        <img src="/img/post.webp" width="400" height="625" alt="An Instagram photo post with a Postsound song pill at the top left and a sound button at the bottom right" fetchpriority="high">
-      </figure>
+
+      <div class="stage" id="stage">
+        <p class="try" id="try"><span>Try it.</span> Scroll the feed. The post in the middle plays.</p>
+        <div class="feed" id="feed" tabindex="0" aria-label="Demo feed">
+          <article class="post" data-tune="0">
+            <header><span class="av"></span><b>maya.walks</b><span>Lisbon</span></header>
+            <div class="media"><img src="/img/photo-rooftop.webp" alt="A woman on a rooftop at sunset beside an old radio" width="400" height="500"></div>
+            <footer><span class="acts" aria-hidden="true"></span><b>2,418 likes</b></footer>
+          </article>
+          <article class="post" data-tune="1">
+            <header><span class="av"></span><b>noor.film</b><span>Goa</span></header>
+            <div class="media"><img src="/img/photo-beach.webp" alt="A beach at golden hour" width="400" height="500"></div>
+            <footer><span class="acts" aria-hidden="true"></span><b>981 likes</b></footer>
+          </article>
+          <article class="post is-reel">
+            <header><span class="av"></span><b>kai.after.dark</b><span>Reel</span></header>
+            <div class="media"><img src="/img/photo-drive.webp" alt="A rainy night drive" width="400" height="500">
+              <span class="reel-note"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M2 8h20"/><path d="m9 2 3 6"/><path d="m15 2 3 6"/><path d="m10 12 5 3-5 3z"/></svg>Reels have their own sound. Postsound skips them.</span></div>
+            <footer><span class="acts" aria-hidden="true"></span><b>5,102 likes</b></footer>
+          </article>
+          <article class="post" data-tune="2">
+            <header><span class="av"></span><b>ira.slowly</b><span>Bengaluru</span></header>
+            <div class="media"><img src="/img/photo-cafe.webp" alt="An iced coffee on a sunny cafe window ledge" width="400" height="500"></div>
+            <footer><span class="acts" aria-hidden="true"></span><b>612 likes</b></footer>
+          </article>
+        </div>
+        <div class="feed-nav">
+          <button type="button" id="prev" aria-label="Previous post"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 15-6-6-6 6"/></svg></button>
+          <span id="count">1 / 4</span>
+          <button type="button" id="next" aria-label="Next post"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        </div>
+        <figure class="popup">
+          <iframe src="/popup-demo" title="The Postsound toolbar popup. It controls the demo feed." width="320" height="400" loading="eager"></iframe>
+          <figcaption>The toolbar popup. It works here too.</figcaption>
+        </figure>
+        <p class="demo-note">Demo tunes, made by your browser. On Instagram you hear the poster’s song.</p>
+      </div>
     </section>
 
-    <section class="why" aria-labelledby="why-h">
-      <h2 id="why-h">Why Instagram on the web has no music</h2>
-      <div class="why-body">
-        <p>The Instagram app plays a photo post’s song from the post’s music data. The website loads the same posts without that data, so the photo shows and the song never starts.</p>
-        <p>Postsound asks instagram.com for each post’s song, the way the site asks for any post detail, and plays the clip the poster chose. Reels already have sound, so it leaves them alone.</p>
-      </div>
+    <section class="how" id="how" aria-labelledby="how-h">
+      <h2 id="how-h">How it finds the song</h2>
+      <ol class="steps">
+        <li><span class="n">01</span><b>You land on a photo post.</b><span>In the feed, on a profile, or in the post popup.</span></li>
+        <li><span class="n">02</span><b>Postsound asks instagram.com for its song.</b><span>The same post details the app already gets.</span></li>
+        <li><span class="n">03</span><b>It plays the part the poster picked.</b><span>Scroll on and the next post takes over.</span></li>
+      </ol>
     </section>
 
-    <section class="feature" aria-labelledby="feat-h">
-      <div class="feature-copy">
-        <h2 id="feat-h">It behaves like the app</h2>
-        <ul class="points">
-          <li><b>One song at a time.</b> The post you are looking at plays. Scroll on and the next one takes over.</li>
-          <li><b>Everywhere you browse.</b> The home feed, profiles, post pages and the post popup.</li>
-          <li><b>Stays out of the way.</b> It stops when you scroll past, close the post or switch tabs, and goes quiet when a video plays with sound.</li>
-          <li><b>Your volume, your call.</b> Mute any photo, set the volume, or switch it off from the toolbar.</li>
-        </ul>
-      </div>
-      <figure class="feature-shot">
-        <img src="/img/popup.webp" width="340" height="300" alt="The Postsound toolbar popup showing the song that plays, a switch and a volume slider" loading="lazy">
-      </figure>
+    <section class="facts" aria-label="What it does and does not do">
+      <div class="fact"><span class="fig">0</span><b>bytes collected</b><span>No servers, no analytics. Only your sound settings, saved in your browser.</span></div>
+      <div class="fact"><span class="fig">1</span><b>song at a time</b><span>It stops when you scroll past, close the post or switch tabs.</span></div>
+      <div class="fact"><span class="fig">2</span><b>browsers</b><span>Chrome and Firefox, including Firefox for Android.</span></div>
     </section>
 
-    <section class="faq" aria-labelledby="faq-h">
+    <section class="faq" id="faq" aria-labelledby="faq-h">
       <h2 id="faq-h">Questions</h2>
-      <details>
-        <summary>Is Postsound free?</summary>
-        <p>Yes. It has no paid tier, no ads and no account. If you want to support it, you can <a href="https://guestbook.deepanalve.dev/sign?product=postsound">buy me a sticker</a>.</p>
-      </details>
-      <details>
-        <summary>What data does it collect?</summary>
-        <p>None. It has no servers. It asks instagram.com for the song of the post on your screen, and saves only your sound settings in your browser. Read the <a href="/privacy">privacy policy</a>.</p>
-      </details>
-      <details>
-        <summary>Why is there no sound when I open Instagram?</summary>
-        <p>Browsers hold back sound until you click the page once. The button on the photo pulses until then. In Firefox you can also allow audio for instagram.com from the play icon in the address bar.</p>
-      </details>
-      <details>
-        <summary>Does it work on Reels?</summary>
-        <p>Reels already play their own sound, so Postsound skips them. It works on photo and carousel posts that have a song.</p>
-      </details>
-      <details>
-        <summary>Does it work on my phone?</summary>
-        <p>The Instagram app already plays photo music. Postsound is for desktop browsers. The Firefox version also runs on Firefox for Android.</p>
-      </details>
-      <details>
-        <summary>Is it made by Instagram?</summary>
-        <p>No. Postsound is an independent extension and is not affiliated with Instagram or Meta.</p>
-      </details>
+      <div class="faq-list">
+        <details><summary>Is it free?</summary><p>Yes. No paid tier, no ads, no account.</p></details>
+        <details><summary>Why no sound when I open Instagram?</summary><p>Browsers hold sound until you click the page once. The button on the photo pulses until then.</p></details>
+        <details><summary>Does it work on Reels?</summary><p>Reels already play their own sound, so Postsound skips them.</p></details>
+        <details><summary>Is it made by Instagram?</summary><p>No. Postsound is independent and not affiliated with Instagram or Meta.</p></details>
+        <details><summary>Something broke?</summary><p>Open the popup and pick Report a problem, or write to <a href="mailto:contact@deepanalve.dev">contact@deepanalve.dev</a>.</p></details>
+        <details><summary>What data does it collect?</summary><p>None. Read the <a href="/privacy">privacy policy</a>.</p></details>
+      </div>
     </section>
 
     <section class="support" aria-labelledby="support-h">
-      <div>
-        <h2 id="support-h">Keep it going</h2>
-        <p>Postsound stays free. The people who keep it going each get a one-of-one sticker on a live wall.</p>
+      <div class="support-copy">
+        <h2 id="support-h">Keep it free</h2>
+        <p>Buy me a sticker. You get a one-of-one sticker made from your name, stuck on a live wall with everyone who keeps Postsound going.</p>
+        <a class="btn primary" href="https://guestbook.deepanalve.dev/sign?product=postsound">Buy me a sticker</a>
       </div>
-      <a class="btn primary" href="https://guestbook.deepanalve.dev/sign?product=postsound">Buy me a sticker</a>
+      <img class="sticker" src="/img/sticker.webp" alt="An example sticker with a name on it" width="280" height="180" loading="lazy">
     </section>
   </main>
 
@@ -117,5 +138,8 @@
     <span>by <a href="https://deepanalve.dev">Deepan Alve</a></span>
     <nav aria-label="Legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="mailto:contact@deepanalve.dev">Contact</a></nav>
   </footer>
+
+  <script src="/demo-audio.js"></script>
+  <script src="/home.js"></script>
 </body>
 </html>
