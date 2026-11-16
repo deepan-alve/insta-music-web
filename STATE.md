@@ -38,6 +38,8 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
   - Packages postsound-chrome-1.1.0.zip and postsound-firefox-1.1.0.xpi are built, not uploaded. Store images are re-rendered.
   - The B concept (record deck) stays in site/concepts/record.html. The Docker image leaves it out.
   - Live on 2026-11-16 (commit 7d59c1d, Dokploy deployment done). Evidence: /, /classic, /popup-demo, /privacy and /terms returned 200 with the new CSP, /concepts returned 404, and in Chrome one click on the feed played the demo tune and the framed popup showed Now playing, with no console errors.
+- Site logo fix (7c43bb8) and MIT licence (f47c5dd) are live on 2026-11-16. Evidence: the live HTML uses /img/mark-96.png at 28 px, and the file returns 200. The 1.1.0 packages now ship LICENSE.
+- Store submission started on 2026-11-16. Deepan chose MIT and both stores. The Chrome dashboard asks Deepan to verify his Google sign-in. AMO shows a CAPTCHA first. Deepan does both, then creates the accounts and pays Google's US$5 fee. Claude fills the listings from store/LISTING.md and stops before each Submit.
 ## Tried and failed
 - Firefox play() can stay pending with no error when autoplay is blocked. Ask `navigator.getAutoplayPolicy` first.
 - A killed test Firefox counts as a startup crash. After a few, Firefox restarts into Troubleshoot Mode and drops the BiDi flag. The test profile turns that check off.
@@ -54,7 +56,7 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 
 ## Next
 1. Reload Postsound in `chrome://extensions`, then check the popup and the About page in his Chrome.
-2. Choose a licence for AMO and create the store accounts. The privacy URL is https://postsound.deepanalve.dev/privacy. See `store/LISTING.md`.
+2. Deepan: sign in to the Chrome developer dashboard (pay the US$5 fee) and to AMO. Then Claude fills both listings from `store/LISTING.md` with dist/*-1.1.0 packages.
 
 ## Rollback
 Remove the extension at `chrome://extensions` or `about:addons`. No other state exists.
