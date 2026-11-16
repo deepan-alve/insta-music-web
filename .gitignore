@@ -8,3 +8,5 @@ target/
 __pycache__/
 dist/
 .next/
+brag-output/
+.playwright-mcp/
