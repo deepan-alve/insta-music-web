@@ -38,7 +38,7 @@ Good to know
 • Turn it on or off any time from the toolbar button
 
 Support
-Postsound stays free. The people who keep it going sign a guestbook by hand at guestbook.deepanalve.dev.
+Postsound stays free. If it made your feed better, buy me a sticker: a one-of-one sticker on a live wall at guestbook.deepanalve.dev.
 
 Private by design
 Postsound has no servers and collects nothing. It asks instagram.com for the song of the post on your screen, the same way the Instagram website asks for post details. The only thing it saves is your sound on or off choice, in your own browser.

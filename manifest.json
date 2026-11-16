@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Postsound: Music for Instagram Photos",
   "short_name": "Postsound",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Hear the music on Instagram photo and carousel posts in your browser. See the song and play its clip, like the app.",
   "permissions": [
     "storage"

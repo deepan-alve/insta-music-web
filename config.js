@@ -3,7 +3,7 @@
 globalThis.POSTSOUND_CONFIG = {
   creator: { name: 'Deepan', url: 'https://deepanalve.dev' },
   contactEmail: 'contact@deepanalve.dev',
-  support: { label: 'Sign the guestbook', url: 'https://guestbook.deepanalve.dev/sign?product=postsound' },
+  support: { label: 'Buy me a sticker', url: 'https://guestbook.deepanalve.dev/sign?product=postsound' },
   issues: { label: 'Open an issue on GitHub', url: '' },
   site: 'https://postsound.deepanalve.dev',
   instagram: 'https://www.instagram.com/',
