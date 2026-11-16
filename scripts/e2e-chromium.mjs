@@ -150,6 +150,15 @@ async function waitState(p, state, ms = 5000) {
   check('post page shows the song pill', await waitState(ig, 'playing', 8000), JSON.stringify(await layer(ig)));
   check('pill shows title and artist', (await layer(ig))?.text === `${SONG.title} · ${SONG.artist}`);
 
+  // The note icon shows only when a song has no cover, so it is checked only when present.
+  const icons = await ig.evaluate(() => ['.ps-btn svg', '.ps-note svg'].map((s, i) => {
+    const n = document.querySelector(s);
+    if (!n) return i > 0;
+    const r = n.getBoundingClientRect();
+    return n.children.length > 0 && r.width > 0 && r.height > 0;
+  }));
+  check('sound button icon draws', icons.every(Boolean), JSON.stringify(icons));
+
   await ig.click('.ps-btn');
   await sleep(500);
   const muted = await layer(ig);
