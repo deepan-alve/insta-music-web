@@ -40,6 +40,8 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
   - Live on 2026-11-16 (commit 7d59c1d, Dokploy deployment done). Evidence: /, /classic, /popup-demo, /privacy and /terms returned 200 with the new CSP, /concepts returned 404, and in Chrome one click on the feed played the demo tune and the framed popup showed Now playing, with no console errors.
 - Site logo fix (7c43bb8) and MIT licence (f47c5dd) are live on 2026-11-16. Evidence: the live HTML uses /img/mark-96.png at 28 px, and the file returns 200. The 1.1.0 packages now ship LICENSE.
 - Store submission started on 2026-11-16. Deepan chose MIT and both stores. The Chrome dashboard asks Deepan to verify his Google sign-in. AMO shows a CAPTCHA first. Deepan does both, then creates the accounts and pays Google's US$5 fee. Claude fills the listings from store/LISTING.md and stops before each Submit.
+- AMO: Postsound 1.1.0 submitted on 2026-11-16 at addons.mozilla.org/.../addon/postsound. Status: Awaiting Review. Evidence: the Status & Versions page shows 1.1.0 Awaiting Review with 0 errors and 0 warnings. Listing has the icon, three captioned screenshots, MIT, categories Photos, Music & Videos and Social & Communication, the privacy policy text and reviewer notes. Slug is `postsound`, because AMO allows 30 characters.
+- AMO validation flagged two innerHTML assignments in content.js. Fixed in d156753: the icons are built with DOM calls. The listing copy now says Postsound saves sound and volume (0fa9431).
 ## Tried and failed
 - Firefox play() can stay pending with no error when autoplay is blocked. Ask `navigator.getAutoplayPolicy` first.
 - A killed test Firefox counts as a startup crash. After a few, Firefox restarts into Troubleshoot Mode and drops the BiDi flag. The test profile turns that check off.
@@ -52,11 +54,12 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 
 ## Uncertain
 - The redesigned build is not seen in Deepan's own Chrome yet. He must reload the extension card first.
-- No store has reviewed the package. The gradient icon looks like Instagram's colours, so review may object.
+- AMO review is pending. The gradient icon looks like Instagram's colours, so review may object.
 
 ## Next
 1. Reload Postsound in `chrome://extensions`, then check the popup and the About page in his Chrome.
-2. Deepan: sign in to the Chrome developer dashboard (pay the US$5 fee) and to AMO. Then Claude fills both listings from `store/LISTING.md` with dist/*-1.1.0 packages.
+2. Deepan: pay the US$5 Chrome developer fee (he plans to on 2026-11-16 night). Then Claude fills the Chrome listing from `store/LISTING.md` with dist/postsound-chrome-1.1.0.zip and stops before Submit.
+3. Watch for Mozilla's review email. If a reviewer asks something, answer from `store/LISTING.md` reviewer notes.
 
 ## Rollback
 Remove the extension at `chrome://extensions` or `about:addons`. No other state exists.
