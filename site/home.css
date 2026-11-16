@@ -40,8 +40,8 @@ svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; 
   display: flex; align-items: center; gap: var(--space-lg);
   padding: var(--space-md) 0;
 }
-.mark { display: inline-flex; align-items: center; gap: var(--space-2xs); font-weight: 600; letter-spacing: var(--track-head); text-decoration: none; }
-.mark img { border-radius: 6px; }
+.mark { display: inline-flex; align-items: center; gap: 10px; font-size: var(--text-lg); font-weight: 650; letter-spacing: var(--track-head); text-decoration: none; }
+.mark img { border-radius: 7px; }
 .bar-nav { display: flex; gap: var(--space-md); margin-left: auto; font-size: var(--text-sm); }
 .bar-nav a { color: var(--color-ink-2); text-decoration: none; white-space: nowrap; transition: color var(--dur-short) var(--ease-out); }
 .bar-nav a:hover { color: var(--color-ink); }
