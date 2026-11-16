@@ -60,7 +60,8 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 
 ## Next
 1. Reload Postsound in `chrome://extensions`, then check the popup and the About page in his Chrome.
-2. Deepan: pay the US$5 Chrome developer fee (he plans to on 2026-11-16 night). Then Claude fills the Chrome listing from `store/LISTING.md` with dist/postsound-chrome-1.1.0.zip and stops before Submit.
+2. Chrome: Deepan paid the US$5 fee on 2026-11-17 and chose a non-trader account. Chrome blocks automation on the Web Store dashboard: Claude in Chrome gets "The extensions gallery cannot be scripted", and the built-in browser cannot load chrome.google.com. So Deepan fills the listing by hand from `store/LISTING.md`, with dist/postsound-chrome-1.1.0.zip (checked on 2026-11-17: the zip matches the source files). Support email on the listing: contact@deepanalve.dev. That address works only through the Zoho catch-all to ghost@ until Zoho support frees it.
+4. Payments: Deepan plans to accept money through Dodo Payments once his Dodo account is approved. What to charge for is not decided. Switch the Chrome account to trader before any paid feature ships.
 3. Watch for Mozilla's review email. If a reviewer asks something, answer from `store/LISTING.md` reviewer notes.
 
 ## Rollback
