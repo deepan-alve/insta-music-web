@@ -1,3 +1,5 @@
 User-agent: *
 Allow: /
+
 Sitemap: https://postsound.deepanalve.dev/sitemap.xml
+Sitemap: https://www.deepanalve.dev/sitemap.xml
