@@ -42,6 +42,8 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 - Store submission started on 2026-11-16. Deepan chose MIT and both stores. The Chrome dashboard asks Deepan to verify his Google sign-in. AMO shows a CAPTCHA first. Deepan does both, then creates the accounts and pays Google's US$5 fee. Claude fills the listings from store/LISTING.md and stops before each Submit.
 - AMO: Postsound 1.1.0 submitted on 2026-11-16 at addons.mozilla.org/.../addon/postsound. Status: Awaiting Review. Evidence: the Status & Versions page shows 1.1.0 Awaiting Review with 0 errors and 0 warnings. Listing has the icon, three captioned screenshots, MIT, categories Photos, Music & Videos and Social & Communication, the privacy policy text and reviewer notes. Slug is `postsound`, because AMO allows 30 characters.
 - AMO validation flagged two innerHTML assignments in content.js. Fixed in d156753: the icons are built with DOM calls. The listing copy now says Postsound saves sound and volume (0fa9431).
+- 2026-11-16: README has badges, store screenshots, the sticker link and a table of the three tools. The repo is still private.
+- 2026-11-16: the site sends `Cache-Control: no-transform`, so Cloudflare no longer injects its analytics beacon (commit 89d3856). Evidence: a browser user agent gets no beacon, and Chromium shows no console errors.
 ## Tried and failed
 - Firefox play() can stay pending with no error when autoplay is blocked. Ask `navigator.getAutoplayPolicy` first.
 - A killed test Firefox counts as a startup crash. After a few, Firefox restarts into Troubleshoot Mode and drops the BiDi flag. The test profile turns that check off.
