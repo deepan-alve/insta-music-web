@@ -37,6 +37,7 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
   - Evidence on 2026-11-16: `npm test` 11 passed, `npm run test:e2e` 25 passed, and the Docker image served every page. Claude checked the built site at 320 to 1440 px: no sideways scroll, no console errors, and the feed and popup controls worked in Chrome.
   - Packages postsound-chrome-1.1.0.zip and postsound-firefox-1.1.0.xpi are built, not uploaded. Store images are re-rendered.
   - The B concept (record deck) stays in site/concepts/record.html. The Docker image leaves it out.
+  - Live on 2026-11-16 (commit 7d59c1d, Dokploy deployment done). Evidence: /, /classic, /popup-demo, /privacy and /terms returned 200 with the new CSP, /concepts returned 404, and in Chrome one click on the feed played the demo tune and the framed popup showed Now playing, with no console errors.
 ## Tried and failed
 - Firefox play() can stay pending with no error when autoplay is blocked. Ask `navigator.getAutoplayPolicy` first.
 - A killed test Firefox counts as a startup crash. After a few, Firefox restarts into Troubleshoot Mode and drops the BiDi flag. The test profile turns that check off.
@@ -52,7 +53,6 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 - No store has reviewed the package. The gradient icon looks like Instagram's colours, so review may object.
 
 ## Next
-0. Push and redeploy the site, then check https://postsound.deepanalve.dev with sound.
 1. Reload Postsound in `chrome://extensions`, then check the popup and the About page in his Chrome.
 2. Choose a licence for AMO and create the store accounts. The privacy URL is https://postsound.deepanalve.dev/privacy. See `store/LISTING.md`.
 
