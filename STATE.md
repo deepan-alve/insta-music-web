@@ -27,6 +27,7 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 - The Support button opens guestbook.deepanalve.dev/sign with Postsound picked. The guestbook lives in `~/code/guestbook`.
 - Live at https://postsound.deepanalve.dev on Dokploy: project `postsound`, compose id `WUy9JVTzl4sh9U93-uBFH`, file `deploy/docker-compose.yml`. Evidence: on 2026-11-16 /, /privacy and /terms returned 200 with a Let's Encrypt origin cert.
 
+- v1.0.1: support is "Buy me a sticker" in the popup, the About page and the website, linking to the sticker wall at guestbook.deepanalve.dev/sign?product=postsound. Store packages built in dist/ (postsound-chrome-1.0.1.zip, postsound-firefox-1.0.1.xpi). Not uploaded to the stores yet. The website is deployed.
 ## Tried and failed
 - Firefox play() can stay pending with no error when autoplay is blocked. Ask `navigator.getAutoplayPolicy` first.
 - A killed test Firefox counts as a startup crash. After a few, Firefox restarts into Troubleshoot Mode and drops the BiDi flag. The test profile turns that check off.
