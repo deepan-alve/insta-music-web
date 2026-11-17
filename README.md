@@ -3,6 +3,7 @@
 [![Website](https://img.shields.io/badge/Website-postsound.deepanalve.dev-ff6a3d)](https://postsound.deepanalve.dev)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 [![Buy me a sticker](https://img.shields.io/badge/Buy%20me%20a%20sticker-ff5a1f)](https://guestbook.deepanalve.dev/sign?product=postsound)
+[![Watch on YouTube](https://img.shields.io/badge/Watch-YouTube-ff0000?logo=youtube&logoColor=white)](https://youtu.be/h4bhhLRea5k)
 
 A browser extension for Chrome and Firefox. It plays the music on Instagram photo and carousel posts on instagram.com, as the mobile app does.
 
@@ -11,6 +12,12 @@ A browser extension for Chrome and Firefox. It plays the music on Instagram phot
 Firefox Add-ons has version 1.1.0 in review. The Chrome Web Store listing comes next.
 
 ![A photo post plays its song](store/screenshot-1.png)
+
+## Watch
+
+[![Postsound launch trailer: play Instagram photo music on PC](store/youtube-thumbnail.jpg)](https://youtu.be/h4bhhLRea5k)
+
+**[Launch trailer on YouTube](https://youtu.be/h4bhhLRea5k)** · **[Vertical Short](https://youtube.com/shorts/DAcvq7zz2go)** · **[All videos on @deepanalve](https://www.youtube.com/@deepanalve)**
 
 | One song at a time | The toolbar popup |
 |---|---|

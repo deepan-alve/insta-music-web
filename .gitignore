@@ -11,3 +11,5 @@ dist/
 brag-output/
 .playwright-mcp/
 youtube/
+brag-output-launch/
+brag-output-short/
