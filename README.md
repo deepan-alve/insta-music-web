@@ -1,5 +1,6 @@
 # Postsound
 
+[![Chrome Web Store](https://img.shields.io/chrome-web-store/v/ifehkojfkbjjjcgcpimjmngopdghaikl?label=Chrome%20Web%20Store&logo=googlechrome&logoColor=white)](https://chromewebstore.google.com/detail/postsound-music-for-insta/ifehkojfkbjjjcgcpimjmngopdghaikl)
 [![Website](https://img.shields.io/badge/Website-postsound.deepanalve.dev-ff6a3d)](https://postsound.deepanalve.dev)
 [![License MIT](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 [![Buy me a sticker](https://img.shields.io/badge/Buy%20me%20a%20sticker-ff5a1f)](https://guestbook.deepanalve.dev/sign?product=postsound)
@@ -7,9 +8,9 @@
 
 A browser extension for Chrome and Firefox. It plays the music on Instagram photo and carousel posts on instagram.com, as the mobile app does.
 
-**[Try the demo at postsound.deepanalve.dev](https://postsound.deepanalve.dev)** · **[Buy me a sticker](https://guestbook.deepanalve.dev/sign?product=postsound)**
+**[Add to Chrome](https://chromewebstore.google.com/detail/postsound-music-for-insta/ifehkojfkbjjjcgcpimjmngopdghaikl)** · **[Try the demo at postsound.deepanalve.dev](https://postsound.deepanalve.dev)** · **[Buy me a sticker](https://guestbook.deepanalve.dev/sign?product=postsound)**
 
-Firefox Add-ons has version 1.1.0 in review. The Chrome Web Store listing comes next.
+Version 1.1.0 is live on the [Chrome Web Store](https://chromewebstore.google.com/detail/postsound-music-for-insta/ifehkojfkbjjjcgcpimjmngopdghaikl). Firefox Add-ons has it in review.
 
 ![A photo post plays its song](store/screenshot-1.png)
 
