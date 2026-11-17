@@ -44,6 +44,7 @@ Postsound plays the song of Instagram photo posts on instagram.com in Chrome and
 - AMO validation flagged two innerHTML assignments in content.js. Fixed in d156753: the icons are built with DOM calls. The listing copy now says Postsound saves sound and volume (0fa9431).
 - 2026-11-16: README has badges, store screenshots, the sticker link and a table of the three tools. Deepan made the repo public on 2026-11-16, after gitleaks found no leaks in 22 commits.
 - 2026-11-16: the site sends `Cache-Control: no-transform`, so Cloudflare no longer injects its analytics beacon (commit 89d3856). Evidence: a browser user agent gets no beacon, and Chromium shows no console errors.
+- 2026-11-17: launch trailer done; Deepan said "Perfect". store/promo-trailer.mp4 (26 s, 1920x1080, -13.9 LUFS, music drops on the click at 4.5 s) and its poster store/promo-trailer.jpg. Made with the brag plugin (~/.claude/plugins/cache/brag) and Hyperframes. The source is in brag-output-launch/ (git-ignored, has bundled music): composition/, audio/build_mix.py, audio/sfx-timeline.txt. The calmer first cut is brag-output/brag.mp4. For the Chrome listing, upload it to YouTube as Unlisted and paste the link.
 ## Tried and failed
 - Firefox play() can stay pending with no error when autoplay is blocked. Ask `navigator.getAutoplayPolicy` first.
 - A killed test Firefox counts as a startup crash. After a few, Firefox restarts into Troubleshoot Mode and drops the BiDi flag. The test profile turns that check off.
